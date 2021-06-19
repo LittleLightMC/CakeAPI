@@ -5,6 +5,7 @@ import org.bukkit.plugin.Plugin
 import pro.darc.cake.CakeAPI
 import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifeInject
+import pro.darc.cake.core.inject.LifecycleLoader
 import pro.darc.cake.module.extensions.Log
 import pro.darc.cake.utils.Once
 import pro.darc.cake.utils.Version
@@ -43,6 +44,7 @@ object AddonManager : Plugin by CakeAPI.instance {
             info.instance = mainClass.getConstructor().newInstance() as Addon
             info.instance!!.init()
             addonMap[uuid] = info
+            LifecycleLoader.addExternalLifecycle(mainClass.packageName, loader)
             Log.info("Addon $name loaded successfully...")
         }
     }

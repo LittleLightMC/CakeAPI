@@ -1,6 +1,5 @@
 package pro.darc.cake.core.inject
 
-import org.jetbrains.annotations.TestOnly
 import org.reflections.Reflections
 import org.reflections.scanners.MethodAnnotationsScanner
 import org.reflections.util.ClasspathHelper
@@ -24,10 +23,7 @@ enum class LifeCycle {
     CakeTest,
 }
 
-@LifeInject([LifeCycle.CakeLoad])
-@TestOnly fun testInject() {}
-
-fun scanPackageLifeCycle(): MutableSet<Method>? {
+private fun scanInnerPackageLifeCycle(): Set<Method>? {
     val pkgName = CakeAPI::class.java.packageName
     val reflect = Reflections(
         ConfigurationBuilder()
@@ -37,9 +33,30 @@ fun scanPackageLifeCycle(): MutableSet<Method>? {
     return reflect.getMethodsAnnotatedWith(LifeInject::class.java)
 }
 
+/**
+ * Get lifecycle annotated with LifeInject
+ *
+ * @param pkgName package path
+ * @param loaders ClassLoader(s)
+ */
+fun scanPackageLifecycle(pkgName: String, vararg loaders: ClassLoader): List<Method> {
+    val reflect = Reflections(
+        ConfigurationBuilder()
+            .setUrls(ClasspathHelper.forPackage(pkgName, *loaders))
+            .setScanners(MethodAnnotationsScanner())
+            .addClassLoaders(*loaders)
+    )
+    return reflect.getMethodsAnnotatedWith(LifeInject::class.java).filter { method ->
+        Modifier.isStatic(method.modifiers)
+    }
+}
+
 object LifecycleLoader {
 
     private val taggedPool: TaggedConcurrentRunnablePool<LifeCycle> by lazy {
+        TaggedConcurrentRunnablePool()
+    }
+    private val externalTaggedPool: TaggedConcurrentRunnablePool<LifeCycle> by lazy {
         TaggedConcurrentRunnablePool()
     }
 
@@ -48,8 +65,8 @@ object LifecycleLoader {
     }
 
     private fun loadInnerLifecycle() {
-        val methods = scanPackageLifeCycle()
-        methods?.iterator()?.forEach { method ->
+        val methods = scanInnerPackageLifeCycle()
+        methods?.forEach { method ->
             val annotation = method.getAnnotation(LifeInject::class.java)
             annotation.type.iterator().forEach { type ->
                 taggedPool.takeIf { Modifier.isStatic(method.modifiers) }?.push(type, annotation.priority) {
@@ -59,6 +76,19 @@ object LifecycleLoader {
         }
     }
 
-    internal fun runLifecycle(cycle: LifeCycle) = taggedPool.runTag(cycle)
+    internal fun addExternalLifecycle(pkgName: String, vararg loader: ClassLoader) {
+        val methods = scanPackageLifecycle(pkgName, *loader)
+        methods.forEach{ method ->
+            assert(Modifier.isStatic(method.modifiers))
+            val annotation = method.getAnnotation(LifeInject::class.java)
+            annotation.type.iterator().forEach { type ->
+                externalTaggedPool.push(type, annotation.priority) {
+                    method.invoke(null)
+                }
+            }
+        }
+    }
+
+    internal fun runLifecycle(cycle: LifeCycle) = taggedPool.runTag(cycle).also { externalTaggedPool.runTag(cycle) }
 
 }
