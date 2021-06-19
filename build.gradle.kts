@@ -28,6 +28,8 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     testImplementation("org.powermock:powermock-module-junit4:2.0.9")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.1")
 }
 
 tasks.test {
