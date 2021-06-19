@@ -1,5 +1,6 @@
 package pro.darc.cake.utils
 
+import pro.darc.cake.module.extensions.Log
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.PriorityBlockingQueue
 
@@ -50,7 +51,12 @@ interface TaggedRunnablePool<T: Comparable<T>> {
     }
 
     fun runTag(tag: T) {
-        tagMap[tag]?.run()
+        try {
+            tagMap[tag]?.run()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.warning("Failed to run lifecycle function ${tagMap[tag].toString()} ...")
+        }
     }
 }
 
