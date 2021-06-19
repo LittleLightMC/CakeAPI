@@ -11,6 +11,7 @@ import pro.darc.cake.utils.Version
 import pro.darc.cake.utils.toVersion
 import java.io.File
 import java.io.IOException
+import java.io.InputStreamReader
 import java.net.URL
 import java.net.URLClassLoader
 import java.util.*
@@ -30,9 +31,9 @@ object AddonManager : Plugin by CakeAPI.instance {
         assert(file.isFile)
         val url = file.toURI().toURL()
         val loader = URLClassLoader.newInstance(arrayOf(url), AddonManager::class.java.classLoader)
-        val addonManifestFile = File(loader.findResource("addon.yml").toURI())
-        addonManifestFile.takeIf { addonManifestFile.exists() }?.let { addon ->
-            val yamlConfiguration = YamlConfiguration.loadConfiguration(addon)
+        val addonManifestStream = loader.getResourceAsStream("addon.yml")
+        addonManifestStream?.let { addon ->
+            val yamlConfiguration = YamlConfiguration.loadConfiguration(InputStreamReader(addon))
             val name = yamlConfiguration.getString("name")
             val version = yamlConfiguration.getString("version")
             val main = yamlConfiguration.getString("main")
@@ -40,6 +41,7 @@ object AddonManager : Plugin by CakeAPI.instance {
             val info = AddonInfo(name!!, version!!, uuid, main!!)
             val mainClass = Class.forName(main, true, loader)
             info.instance = mainClass.getConstructor().newInstance() as Addon
+            info.instance!!.init()
             addonMap[uuid] = info
             Log.info("Addon $name loaded successfully...")
         }

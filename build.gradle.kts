@@ -40,6 +40,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.shadowJar {
+    archiveBaseName.set("CakeAPI-shade")
     dependencies {
         include(dependency("org.reflections:reflections:0.9.12"))
         include(dependency("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"))
