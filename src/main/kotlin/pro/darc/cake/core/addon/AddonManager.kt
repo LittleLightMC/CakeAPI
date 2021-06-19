@@ -70,6 +70,7 @@ object AddonManager : Plugin by CakeAPI.instance {
     @LifeInject([LifeCycle.CakeLoad, LifeCycle.CakeReload])
     @JvmStatic
     fun init() {
+        addonMap.clear()
         initAddonFolder()
         loadAddon()
     }

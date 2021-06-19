@@ -59,4 +59,8 @@ class TaggedConcurrentRunnablePool
     : TaggedRunnablePool<T>
         where T: Comparable<T> {
     override val tagMap = ConcurrentHashMap<T, RunnablePool>()
+
+    fun clear() {
+        tagMap.clear()
+    }
 }

@@ -70,10 +70,17 @@ object LifecycleLoader {
             val annotation = method.getAnnotation(LifeInject::class.java)
             annotation.type.iterator().forEach { type ->
                 taggedPool.takeIf { Modifier.isStatic(method.modifiers) }?.push(type, annotation.priority) {
+                    method.trySetAccessible()
                     method.invoke(null)
                 }
             }
         }
+    }
+
+    @LifeInject([LifeCycle.CakeReload])
+    @JvmStatic
+    private fun onReload() {
+        externalTaggedPool.clear()
     }
 
     internal fun addExternalLifecycle(pkgName: String, vararg loader: ClassLoader) {
@@ -83,6 +90,7 @@ object LifecycleLoader {
             val annotation = method.getAnnotation(LifeInject::class.java)
             annotation.type.iterator().forEach { type ->
                 externalTaggedPool.push(type, annotation.priority) {
+                    method.trySetAccessible()
                     method.invoke(null)
                 }
             }
