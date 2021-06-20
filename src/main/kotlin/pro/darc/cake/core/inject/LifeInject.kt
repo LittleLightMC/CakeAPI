@@ -1,9 +1,9 @@
 package pro.darc.cake.core.inject
 
-import org.reflections.Reflections
-import org.reflections.scanners.MethodAnnotationsScanner
-import org.reflections.util.ClasspathHelper
-import org.reflections.util.ConfigurationBuilder
+import org.reflections8.Reflections
+import org.reflections8.scanners.MethodAnnotationsScanner
+import org.reflections8.util.ClasspathHelper
+import org.reflections8.util.ConfigurationBuilder
 import pro.darc.cake.CakeAPI
 import pro.darc.cake.utils.Priority
 import pro.darc.cake.utils.TaggedConcurrentRunnablePool
@@ -43,8 +43,8 @@ fun scanPackageLifecycle(pkgName: String, vararg loaders: ClassLoader): List<Met
     val reflect = Reflections(
         ConfigurationBuilder()
             .setUrls(ClasspathHelper.forPackage(pkgName, *loaders))
-            .setScanners(MethodAnnotationsScanner())
             .addClassLoaders(*loaders)
+            .setScanners(MethodAnnotationsScanner())
     )
     return reflect.getMethodsAnnotatedWith(LifeInject::class.java).filter { method ->
         Modifier.isStatic(method.modifiers)
