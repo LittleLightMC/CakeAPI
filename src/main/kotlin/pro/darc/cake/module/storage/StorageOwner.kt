@@ -1,5 +1,9 @@
 package pro.darc.cake.module.storage
 
+import org.bukkit.entity.Player
+import pro.darc.cake.module.extensions.server
+import java.util.*
+
 val OWNER_REGEX = Regex("^(server|group|user):*(\\w+)?$")
 
 /**
@@ -27,8 +31,11 @@ class StorageOwner(private val note: String = "server") {
         id = idStr
     }
 
-    fun getPlayer() {
-    }
+    fun getPlayer(): Player? =
+        when (type) {
+            StorageOwnerType.USER -> server.getPlayer(UUID.fromString(id))
+            else -> null
+        }
 
 }
 

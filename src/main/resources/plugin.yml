@@ -4,4 +4,7 @@ main: ${plugin_main_path}
 authors: [DarcJC]
 api-version: 1.17
 website: https://cake.darc.icu
+depend:
+  - ProtocolLib
+  - Vault
 
