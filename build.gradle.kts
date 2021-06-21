@@ -37,6 +37,7 @@ dependencies {
     implementation("org.mongodb:mongodb-driver-reactivestreams:4.2.3")
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.8")
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
+    implementation("com.github.okkero:Skedule:v1.2.6")
 }
 
 tasks.test {

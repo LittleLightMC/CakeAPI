@@ -1,6 +1,7 @@
 package pro.darc.cake.utils
 
 import org.bukkit.entity.Player
+import kotlin.reflect.KClass
 
 
 class HashcodeComparator<T> : Comparator<T> {
@@ -14,3 +15,5 @@ object PlayerComparator : Comparator<Player> {
         return p0.uniqueId.compareTo(p1.uniqueId)
     }
 }
+
+val KClassComparator = HashcodeComparator<KClass<*>>()
