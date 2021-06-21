@@ -46,7 +46,9 @@ fun Plugin.migrateYAMLFile(path: String): YamlConfiguration {
 
 object Config: Plugin by cake {
     lateinit var main: YamlConfiguration
+        private set
     lateinit var db: YamlConfiguration
+        private set
 
     @LifeInject([LifeCycle.CakeReload, LifeCycle.CakeLoad])
     @JvmStatic

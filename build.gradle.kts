@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.5.10"
     kotlin("kapt") version "1.5.10"
     kotlin("plugin.serialization") version "1.5.10"
-    id("com.github.johnrengelman.shadow") version "2.0.4"
+    id("com.github.johnrengelman.shadow") version "5.0.0"
 }
 
 group = "pro.darc.cake"
@@ -36,6 +36,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0-SNAPSHOT")
     implementation("org.mongodb:mongodb-driver-reactivestreams:4.2.3")
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.8")
+    implementation("org.bstats", "bstats-bukkit", "2.2.1")
 }
 
 tasks.test {
@@ -49,6 +50,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.shadowJar {
     archiveBaseName.set("CakeAPI-shade")
+    minimize()
 }
 
 tasks.processResources {

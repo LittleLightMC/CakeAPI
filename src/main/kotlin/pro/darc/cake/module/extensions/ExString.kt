@@ -1,4 +1,8 @@
 package pro.darc.cake.module.extensions
+
+import net.md_5.bungee.api.ChatColor
+import java.util.regex.Pattern
+
 private val unicodeRegex = "((\\\\u)([0-9]{4}))".toRegex()
 
 fun String.javaUnicodeToCharacter(): String = unicodeRegex.replace(this) {
@@ -30,4 +34,21 @@ fun String.toBooleanOrNull(
     trueCases.any { it.equals(this, true) } -> true
     falseCases.any { it.equals(this, true) } -> false
     else -> null
+}
+
+/**
+ * return a colorized string
+ *
+ * Support HEX color introducing from 1.16
+ *
+ * @param hexPattern provide a hex color tag format
+ */
+fun String.colorize(hexPattern: Pattern = Pattern.compile("(?<!\\\\\\\\)(#[a-fA-F0-9]{6})")): String {
+    var res = this.replace('&', '§')
+    val matcher = hexPattern.matcher(this)
+    while (matcher.find()) {
+        val color = this.substring(matcher.start(), matcher.end())
+        res = this.replace(color, "${ChatColor.of(color)}")
+    }
+    return res
 }
