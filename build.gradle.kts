@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.5.10"
     kotlin("kapt") version "1.5.10"
     kotlin("plugin.serialization") version "1.5.10"
-    id("com.github.johnrengelman.shadow") version "5.0.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "pro.darc.cake"
@@ -49,8 +49,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.shadowJar {
-    archiveBaseName.set("CakeAPI-shade")
-    minimize()
+    relocate("org.bstats", "pro.darc.cake")
 }
 
 tasks.processResources {
