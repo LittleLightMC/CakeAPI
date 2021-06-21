@@ -4,6 +4,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.TestOnly
 import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifecycleLoader
+import pro.darc.cake.module.db.client
+import pro.darc.cake.module.extensions.Config
 
 open class CakeAPI : JavaPlugin() {
 
@@ -20,6 +22,7 @@ open class CakeAPI : JavaPlugin() {
     override fun onLoad() {
         instance = this
         LifecycleLoader.runLifecycle(LifeCycle.CakeLoad)
+        val db = client.getDatabase("test")
     }
 
     override fun onEnable() = LifecycleLoader.runLifecycle(LifeCycle.CakeEnable)

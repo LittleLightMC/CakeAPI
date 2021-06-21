@@ -7,6 +7,8 @@ import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifeInject
 import pro.darc.cake.core.inject.LifecycleLoader
 import pro.darc.cake.module.extensions.Log
+import pro.darc.cake.module.extensions.cake
+import pro.darc.cake.module.extensions.subFile
 import pro.darc.cake.utils.Once
 import pro.darc.cake.utils.Version
 import pro.darc.cake.utils.toVersion
@@ -23,8 +25,7 @@ object AddonManager : Plugin by CakeAPI.instance {
     private val addonMap = ConcurrentHashMap<UUID, AddonInfo>()
 
     private val initAddonFolder = Once {
-        val folder = this.dataFolder
-        val addonFolder = File(folder, "addons")
+        val addonFolder = cake.subFile("addons")
         addonFolder.mkdirs()
     }
 
@@ -50,7 +51,7 @@ object AddonManager : Plugin by CakeAPI.instance {
     }
 
     private val loadAddon = Once {
-        val folder = File(this.dataFolder, "addons")
+        val folder = cake.subFile("addons")
         assert(folder.exists())
         assert(folder.isDirectory)
         folder.listFiles { _, name ->

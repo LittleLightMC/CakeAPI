@@ -22,17 +22,20 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
 //    implementation("org.reflections:reflections:0.9.12")
     implementation("net.oneandone.reflections8:reflections8:0.11.7")
     implementation("org.javassist:javassist:3.28.0-GA")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
     testImplementation("org.powermock:powermock-module-junit4:2.0.9")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.1")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0-SNAPSHOT")
+    implementation("org.mongodb:mongodb-driver-reactivestreams:4.2.3")
+    implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.8")
 }
 
 tasks.test {
@@ -46,13 +49,6 @@ tasks.withType<KotlinCompile> {
 
 tasks.shadowJar {
     archiveBaseName.set("CakeAPI-shade")
-    dependencies {
-//        include(dependency("org.reflections:reflections:0.9.12"))
-        include(dependency("net.oneandone.reflections8:reflections8:0.11.7"))
-        include(dependency("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"))
-        include(dependency("org.javassist:javassist:3.28.0-GA"))
-    }
-    mergeServiceFiles()
 }
 
 tasks.processResources {

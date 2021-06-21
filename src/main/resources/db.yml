@@ -1,0 +1,5 @@
+# Don't edit
+version: 1
+
+'db uri': "mongodb://localhost:27017"
+
