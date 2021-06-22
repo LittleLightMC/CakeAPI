@@ -59,6 +59,6 @@ object Config: Plugin by cake {
     }
 }
 
-fun Plugin.registerEvents(
-    vararg listeners: Listener
-) = listeners.forEach { server.pluginManager.registerEvents(it, this) }
+//fun Plugin.registerEvents(
+//    vararg listeners: Listener
+//) = listeners.forEach { server.pluginManager.registerEvents(it, this) }

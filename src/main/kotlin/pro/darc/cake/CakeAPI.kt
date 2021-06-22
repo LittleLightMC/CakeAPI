@@ -36,7 +36,7 @@ open class CakeAPI : JavaPlugin() {
             instance.controllers.forEach {
                 it.onEnable()
 
-                if (it is Listener) instance.registerEvents(it)
+                if (it is Listener) it.registerEvents(instance)
             }
         }
     }
