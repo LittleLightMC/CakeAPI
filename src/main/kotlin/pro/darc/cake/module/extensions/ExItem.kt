@@ -5,6 +5,7 @@ import org.bukkit.inventory.meta.ItemMeta
 import java.util.*
 import com.google.common.collect.Multimap
 import org.bukkit.Material
+import org.bukkit.block.data.BlockData
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.material.MaterialData
 
@@ -50,6 +51,15 @@ fun MaterialData.toItemStack(
     amount: Int = 1,
     meta: ItemMeta.() -> Unit = {}
 ) = toItemStack(amount).meta(meta)
+
+fun Material.asBlockData(
+    data: String = "",
+) = this.createBlockData(data)
+
+fun BlockData.toItemStack(
+    amount: Int = 1,
+    meta: ItemMeta.() -> Unit = {}
+) = material.asItemStack(amount, meta=meta)
 
 /**
  * get head from base64
