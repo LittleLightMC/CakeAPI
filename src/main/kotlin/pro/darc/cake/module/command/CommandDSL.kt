@@ -180,7 +180,7 @@ open class CommandDSL (
                 if (playerExecutor != null) {
                     if (sender is Player) {
                         val playerJob = Job() // store and cancel when player
-                        if (cancelOnPlayerDisconnect) jobsFromPlayers.put(sender, playerJob, { if (it.isActive) it.cancel() })
+                        if (cancelOnPlayerDisconnect) jobsFromPlayers.put(sender, playerJob) { if (it.isActive) it.cancel() }
                         coroutineScope.launch(playerJob) {
                             val executorModel = Executor(sender, label, args, this@CommandDSL, coroutineScope)
                             treatFail(executorModel) {

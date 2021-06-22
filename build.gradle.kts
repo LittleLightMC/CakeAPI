@@ -38,6 +38,7 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.8")
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
     implementation("com.github.okkero:Skedule:v1.2.6")
+    compileOnly("com.github.PlaceholderAPI:PlaceholderAPI:2.10.9")
 }
 
 tasks.test {

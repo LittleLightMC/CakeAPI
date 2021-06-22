@@ -7,4 +7,5 @@ website: https://cake.darc.icu
 depend:
   - ProtocolLib
   - Vault
+  - PlaceholderAPI
 
