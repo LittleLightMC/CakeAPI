@@ -3,13 +3,12 @@ package pro.darc.cake
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.TestOnly
+import pro.darc.cake.core.controller.BungeeCordController
 import pro.darc.cake.core.controller.CommandController
 import pro.darc.cake.core.controller.ProviderController
 import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifecycleLoader
 import pro.darc.cake.module.command.command
-import pro.darc.cake.module.db.client
-import pro.darc.cake.module.extensions.Config
 
 internal fun provideCakeAPI(): CakeAPI {
     return Bukkit.getServer().pluginManager.getPlugin("CakeAPI") as CakeAPI?
@@ -28,6 +27,7 @@ open class CakeAPI : JavaPlugin() {
         }
     }
 
+    internal val bungeeCordController = BungeeCordController()
     internal val commandController = CommandController()
     internal val providerController = ProviderController()
 
