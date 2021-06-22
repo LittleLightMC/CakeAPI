@@ -4,6 +4,8 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 import pro.darc.cake.CakeAPI
+import pro.darc.cake.core.inject.LifeCycle
+import pro.darc.cake.core.inject.LifeInject
 import pro.darc.cake.module.extensions.cake
 import pro.darc.cake.provideCakeAPI
 import pro.darc.cake.utils.BungeeCordRequest

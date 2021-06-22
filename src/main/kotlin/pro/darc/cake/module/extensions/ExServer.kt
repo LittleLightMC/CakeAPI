@@ -78,3 +78,5 @@ fun addRecipe(recipe: Recipe): Boolean = server.addRecipe(recipe)
 fun recipesFor(item: ItemStack): List<Recipe> = server.getRecipesFor(item)
 
 fun WorldCreator.create(): World = server.createWorld(this)!!
+
+val console get() = Bukkit.getConsoleSender()
