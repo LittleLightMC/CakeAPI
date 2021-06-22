@@ -24,6 +24,7 @@ internal class ProviderController: KListener, Controller {
         return providerTree.get(plugin.name)?.remove(any::class) == true
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Any> find(plugin: Plugin, kclass: KClass<T>): T {
         return providerTree[plugin.name]?.get(kclass) as T
     }
