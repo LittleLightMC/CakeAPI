@@ -15,7 +15,9 @@ fun PlayerInventory.clearAll() {
     clearArmor()
 }
 
-val Player.hasItemInHand get() = itemInHand.type != Material.AIR
+val Player.hasItemInMainHand get() = inventory.itemInMainHand.type != Material.AIR
+val Player.hasItemInOffHand get() = inventory.itemInOffHand.type != Material.AIR
+val Player.hasItemInHand get() = hasItemInMainHand && hasItemInOffHand
 
 fun Player.playSound(sound: Sound, volume: Float, pitch: Float) = playSound(location, sound, volume, pitch)
 fun Player.playNote(instrument: Instrument, note: Note) = playNote(location, instrument, note)
@@ -35,6 +37,14 @@ fun CommandSender.isPlayer(): Boolean {
     return this is Player
 }
 
-fun CommandSender.isPlayerThen(then: Player.() -> Unit) {
-    if (isPlayer()) then(this as Player)
+class ElseContext<T>(private val boxed: T?) {
+    infix fun otherwise(callback: T.() -> Unit) = boxed?.let { callback(it) }
+}
+
+fun CommandSender.isPlayerThen(then: Player.() -> Unit): ElseContext<CommandSender> {
+    return if (isPlayer()) {
+        then(this as Player)
+        ElseContext(null)
+    }
+    else ElseContext(this)
 }

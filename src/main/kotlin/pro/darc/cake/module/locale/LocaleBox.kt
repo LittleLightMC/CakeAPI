@@ -1,6 +1,12 @@
 package pro.darc.cake.module.locale
 
-import net.md_5.bungee.api.chat.BaseComponent
+import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.events.PacketContainer
+import com.comphenix.protocol.wrappers.WrappedChatComponent
+import com.okkero.skedule.schedule
+import net.md_5.bungee.api.ChatMessageType
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarStyle
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.configuration.serialization.ConfigurationSerialization
@@ -9,10 +15,18 @@ import org.bukkit.entity.Player
 import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifeInject
 import pro.darc.cake.module.extensions.*
+import java.util.*
 import kotlin.reflect.KClass
 
 interface LocaleBox {
     fun send(receiver: CommandSender)
+}
+
+class MissingFieldError(override val message: String? = "", override val cause: Throwable? = null): RuntimeException()
+
+@Throws(MissingFieldError::class)
+fun<T> REQUIRED(item: T?): T {
+    return (item ?: throw MissingFieldError())
 }
 
 class SimpleStringBox(val string: String): LocaleBox {
@@ -68,8 +82,10 @@ class TextLocaleBox(
 class PlayerCommandLocaleBox(
     val command: String,
 ): ComplexLocaleBox() {
-    override fun send(receiver: CommandSender) = receiver.isPlayerThen {
-        this.performCommand(command.replaceByPAPI(this))
+    override fun send(receiver: CommandSender) {
+        receiver.isPlayerThen {
+            this.performCommand(command.replaceByPAPI(this))
+        }
     }
 
     override fun serialize(): MutableMap<String, Any> {
@@ -123,6 +139,8 @@ class SoundLocaleBox(
     override fun send(receiver: CommandSender) {
         receiver.isPlayerThen {
             playSound(location, sound, volume, pitch)
+        } otherwise {
+            sendMessage("Played sound $sound with $volume dB in $pitch")
         }
     }
 
@@ -137,7 +155,7 @@ class SoundLocaleBox(
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): SoundLocaleBox {
-            val sound = args["sound"]!! as String
+            val sound = REQUIRED(args["sound"] as String)
             val volume = args["volume"]
             val pitch = args["pitch"]
             return SoundLocaleBox(
@@ -152,21 +170,49 @@ class SoundLocaleBox(
 
 @SerializableAs("Title")
 class TitleLocaleBox(
-    val command: String,
+    val title: String,
+    private var subtitle: String?,
+    private var fadein: Int?,
+    private var fadeout: Int?,
+    private var stay: Int?,
 ): ComplexLocaleBox() {
+
+    init {
+        this.subtitle = subtitle ?: ""
+        this.fadein = fadein ?: 0
+        this.fadeout = fadeout ?: 0
+        this.stay = stay ?: 3
+    }
+
     override fun send(receiver: CommandSender) {
-        TODO()
+        receiver.isPlayerThen {
+            val title = title.colorize().replaceByPAPI(this)
+            sendTitle(title, subtitle, fadein!!, stay!!, fadeout!!)
+        } otherwise {
+            sendMessage(title.colorize())
+        }
     }
 
     override fun serialize(): MutableMap<String, Any> {
         return mutableMapOf(
+            "title" to title,
+            "subtitle" to subtitle!!,
+            "fadein" to fadein!!,
+            "fadeuot" to fadeout!!,
+            "stay" to stay!!,
         )
     }
 
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): TitleLocaleBox {
-            TODO()
+            return TitleLocaleBox(
+                title = REQUIRED(args["title"] as String),
+                subtitle = args["subtitle"] as String?,
+                fadein = args["fadein"] as Int?,
+                fadeout = args["fadeout"] as Int?,
+                stay = args["stay"] as Int?,
+            )
         }
     }
 }
@@ -174,20 +220,82 @@ class TitleLocaleBox(
 
 @SerializableAs("Bar")
 class BarLocaleBox(
-    val command: String,
+    val text: String,
+    private var color: String?,
+    private var style: String?,
+    private var progress: Float?,
+    private var timeout: Int?,
+    private var interval: Int?,
 ): ComplexLocaleBox() {
+
+    init {
+        this.color = color?.uppercase() ?: "BLUE"
+        this.style = style?.uppercase() ?: "SEGMENTED_20"
+        this.progress = progress ?: 1F
+        this.timeout = timeout ?: 20
+        this.interval = interval ?: 2
+    }
+
     override fun send(receiver: CommandSender) {
+        receiver.isPlayerThen {
+            val uuid: UUID = UUID.randomUUID()
+            var prog = progress
+            val title = text.colorize().replaceByPAPI(this)
+            sendPacket {
+                val container = PacketContainer(PacketType.Play.Server.BOSS)
+                container.uuiDs.write(0, uuid)
+                container.integers.write(0, 0) // add
+                container.chatComponents.write(0, WrappedChatComponent.fromText(title))
+                container.float.write(0, prog)
+                container.integers.write(1, BarColor.valueOf(color!!).ordinal) // color
+                container.integers.write(2, BarStyle.valueOf(style!!).ordinal) // division
+                container
+            }
+            scheduler.schedule(cake) {
+                for (i in 0..timeout!!) {
+                    waitFor((20 * interval!!).toLong())
+                    prog = prog!!.minus(progress!! / (timeout!! * interval!!))
+                    sendPacket {
+                        val container = PacketContainer(PacketType.Play.Server.BOSS)
+                        container.uuiDs.write(0, uuid)
+                        container.integers.write(0, 2) // update health
+                        container.float.write(0, prog)
+                        container
+                    }
+                }
+                sendPacket {
+                    val container = PacketContainer(PacketType.Play.Server.BOSS)
+                    container.uuiDs.write(0, uuid)
+                    container
+                }
+            }
+        } otherwise {
+            sendMessage(text.colorize())
+        }
     }
 
     override fun serialize(): MutableMap<String, Any> {
         return mutableMapOf(
+            "text" to text,
+            "color" to color!!,
+            "style" to style!!,
+            "progress" to progress!!,
+            "timeout" to timeout!!,
+            "interval" to interval!!,
         )
     }
 
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): BarLocaleBox {
-            TODO()
+            return BarLocaleBox(
+                text = REQUIRED(args["text"] as String),
+                color = args["color"] as String?,
+                style = args["style"] as String?,
+                progress = args["progress"] as Float?,
+                timeout = args["timeout"] as Int?,
+                interval = args["interval"] as Int?,
+            )
         }
     }
 }
@@ -215,10 +323,16 @@ class JSONLocaleBox(
 
 @SerializableAs("Action")
 class ActionLocaleBox(
-    val command: String,
+    val text: String,
 ): ComplexLocaleBox() {
     override fun send(receiver: CommandSender) {
-        TODO()
+        var message = text.colorize()
+        receiver.isPlayerThen {
+            message = message.replaceByPAPI(this)
+            spigot().sendMessage(ChatMessageType.ACTION_BAR, textOf(message))
+        } otherwise {
+            sendMessage(message)
+        }
     }
 
     override fun serialize(): MutableMap<String, Any> {
@@ -229,7 +343,7 @@ class ActionLocaleBox(
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): ActionLocaleBox {
-            TODO()
+            return ActionLocaleBox(REQUIRED(args["text"] as String))
         }
     }
 }
