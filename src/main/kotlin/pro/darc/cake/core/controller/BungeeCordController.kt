@@ -3,16 +3,13 @@ package pro.darc.cake.core.controller
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
-import pro.darc.cake.CakeAPI
-import pro.darc.cake.core.inject.LifeCycle
-import pro.darc.cake.core.inject.LifeInject
+import pro.darc.cake.core.controller.Controllers.bungeeCordController
 import pro.darc.cake.module.extensions.cake
-import pro.darc.cake.provideCakeAPI
 import pro.darc.cake.utils.BungeeCordRequest
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 
-internal fun provideBungeeCordController() = provideCakeAPI().bungeeCordController
+internal fun provideBungeeCordController() = bungeeCordController
 
 internal class BungeeCordController: PluginMessageListener, Controller {
 

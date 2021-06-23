@@ -2,14 +2,14 @@ package pro.darc.cake.core.controller
 
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.plugin.Plugin
+import pro.darc.cake.core.controller.Controllers.providerController
 import pro.darc.cake.module.extensions.KListener
 import pro.darc.cake.module.extensions.event
-import pro.darc.cake.provideCakeAPI
 import pro.darc.cake.utils.KClassComparator
 import java.util.*
 import kotlin.reflect.KClass
 
-internal fun provideProviderController() = provideCakeAPI().providerController
+internal fun provideProviderController() = providerController
 
 internal class ProviderController: KListener, Controller {
 

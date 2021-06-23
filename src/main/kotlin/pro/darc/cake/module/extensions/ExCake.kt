@@ -1,5 +1,6 @@
 package pro.darc.cake.module.extensions
 
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
@@ -10,7 +11,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 
-val cake get() = CakeAPI.instance
+val cake get() = provideCakeAPI()
 
 fun Plugin.subFile(name: String): File = File(this.dataFolder, name)
 
@@ -62,3 +63,8 @@ object Config: Plugin by cake {
 //fun Plugin.registerEvents(
 //    vararg listeners: Listener
 //) = listeners.forEach { server.pluginManager.registerEvents(it, this) }
+
+internal fun provideCakeAPI(): CakeAPI {
+    return Bukkit.getServer().pluginManager.getPlugin("CakeAPI") as CakeAPI?
+        ?: throw IllegalAccessException("The plugin CakeAPI is not loaded yet")
+}
