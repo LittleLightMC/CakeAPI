@@ -5,7 +5,9 @@ import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.okkero.skedule.schedule
 import net.md_5.bungee.api.ChatMessageType
+import org.bukkit.Bukkit
 import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarFlag
 import org.bukkit.boss.BarStyle
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.serialization.ConfigurationSerializable
@@ -16,13 +18,14 @@ import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifeInject
 import pro.darc.cake.module.extensions.*
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 
 interface LocaleBox {
     fun send(receiver: CommandSender)
 }
 
-class MissingFieldError(override val message: String? = "", override val cause: Throwable? = null): RuntimeException()
+class MissingFieldError(override val message: String? = "", override val cause: Throwable? = null): RuntimeException(message, cause)
 
 @Throws(MissingFieldError::class)
 fun<T> REQUIRED(item: T?): T {
@@ -72,7 +75,7 @@ class TextLocaleBox(
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): TextLocaleBox {
-            return TextLocaleBox(args["text"] as String)
+            return TextLocaleBox(REQUIRED(args["text"]) as String)
         }
     }
 
@@ -97,7 +100,7 @@ class PlayerCommandLocaleBox(
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): PlayerCommandLocaleBox {
-            return PlayerCommandLocaleBox(args["command"] as String)
+            return PlayerCommandLocaleBox(REQUIRED(args["command"]) as String)
         }
     }
 }
@@ -124,7 +127,7 @@ class ServerCommandLocaleBox(
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): PlayerCommandLocaleBox {
-            return PlayerCommandLocaleBox(args["command"] as String)
+            return PlayerCommandLocaleBox(REQUIRED(args["command"]) as String)
         }
     }
 }
@@ -132,10 +135,15 @@ class ServerCommandLocaleBox(
 
 @SerializableAs("Sound")
 class SoundLocaleBox(
-    val sound: String,
+    private var sound: String,
     val volume: Float = 3F,
     val pitch: Float = 0.5F,
 ): ComplexLocaleBox() {
+
+    init {
+        this.sound = sound.lowercase() // resource key must follow regex [a-z0-9/._-]
+    }
+
     override fun send(receiver: CommandSender) {
         receiver.isPlayerThen {
             playSound(location, sound, volume, pitch)
@@ -155,13 +163,13 @@ class SoundLocaleBox(
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): SoundLocaleBox {
-            val sound = REQUIRED(args["sound"] as String)
+            val sound = REQUIRED(args["sound"]) as String
             val volume = args["volume"]
             val pitch = args["pitch"]
             return SoundLocaleBox(
                 sound,
-                (volume ?: 3F) as Float,
-                (pitch ?: 0.5F) as Float,
+                ((volume ?: 3F) as Double).toFloat(),
+                ((pitch ?: 0.5F) as Double).toFloat(),
             )
         }
     }
@@ -207,7 +215,7 @@ class TitleLocaleBox(
         @JvmStatic
         fun deserialize(args: Map<String, Any>): TitleLocaleBox {
             return TitleLocaleBox(
-                title = REQUIRED(args["title"] as String),
+                title = REQUIRED(args["title"]) as String,
                 subtitle = args["subtitle"] as String?,
                 fadein = args["fadein"] as Int?,
                 fadeout = args["fadeout"] as Int?,
@@ -223,51 +231,42 @@ class BarLocaleBox(
     val text: String,
     private var color: String?,
     private var style: String?,
-    private var progress: Float?,
+    private var progress: Double?,
     private var timeout: Int?,
     private var interval: Int?,
+    private var flags: ArrayList<String>?,
 ): ComplexLocaleBox() {
+
+    val _flags: Array<BarFlag> by lazy {
+        flags!!.map {
+            BarFlag.valueOf(it)
+        }.toTypedArray()
+    }
 
     init {
         this.color = color?.uppercase() ?: "BLUE"
         this.style = style?.uppercase() ?: "SEGMENTED_20"
-        this.progress = progress ?: 1F
+        this.progress = progress ?: 1.0
         this.timeout = timeout ?: 20
         this.interval = interval ?: 2
+        this.flags = flags ?: arrayListOf()
     }
 
     override fun send(receiver: CommandSender) {
         receiver.isPlayerThen {
-            val uuid: UUID = UUID.randomUUID()
-            var prog = progress
+            var prog = progress!!
             val title = text.colorize().replaceByPAPI(this)
-            sendPacket {
-                val container = PacketContainer(PacketType.Play.Server.BOSS)
-                container.uuiDs.write(0, uuid)
-                container.integers.write(0, 0) // add
-                container.chatComponents.write(0, WrappedChatComponent.fromText(title))
-                container.float.write(0, prog)
-                container.integers.write(1, BarColor.valueOf(color!!).ordinal) // color
-                container.integers.write(2, BarStyle.valueOf(style!!).ordinal) // division
-                container
-            }
+            val bossbar = Bukkit.createBossBar(title, BarColor.valueOf(color!!), BarStyle.valueOf(style!!), *_flags)
+            bossbar.progress = prog
+            bossbar.addPlayer(this)
             scheduler.schedule(cake) {
-                for (i in 0..timeout!!) {
-                    waitFor((20 * interval!!).toLong())
-                    prog = prog!!.minus(progress!! / (timeout!! * interval!!))
-                    sendPacket {
-                        val container = PacketContainer(PacketType.Play.Server.BOSS)
-                        container.uuiDs.write(0, uuid)
-                        container.integers.write(0, 2) // update health
-                        container.float.write(0, prog)
-                        container
-                    }
+                for (i in 0..timeout!! step interval!!) {
+                    waitFor((interval!!).toLong())
+                    prog = prog.minus(progress!! / (timeout!! / interval!!))
+                    if (prog >= 0) bossbar.progress = prog
                 }
-                sendPacket {
-                    val container = PacketContainer(PacketType.Play.Server.BOSS)
-                    container.uuiDs.write(0, uuid)
-                    container
-                }
+                bossbar.removeAll()
+                bossbar.isVisible = false
             }
         } otherwise {
             sendMessage(text.colorize())
@@ -282,6 +281,7 @@ class BarLocaleBox(
             "progress" to progress!!,
             "timeout" to timeout!!,
             "interval" to interval!!,
+            "flags" to flags!!,
         )
     }
 
@@ -289,12 +289,13 @@ class BarLocaleBox(
         @JvmStatic
         fun deserialize(args: Map<String, Any>): BarLocaleBox {
             return BarLocaleBox(
-                text = REQUIRED(args["text"] as String),
+                text = REQUIRED(args["text"]) as String,
                 color = args["color"] as String?,
                 style = args["style"] as String?,
-                progress = args["progress"] as Float?,
+                progress = args["progress"] as Double?,
                 timeout = args["timeout"] as Int?,
                 interval = args["interval"] as Int?,
+                flags = args["flags"] as ArrayList<String>?,
             )
         }
     }
@@ -343,7 +344,19 @@ class ActionLocaleBox(
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): ActionLocaleBox {
-            return ActionLocaleBox(REQUIRED(args["text"] as String))
+            return ActionLocaleBox(REQUIRED(args["text"]) as String)
         }
     }
+}
+
+class LocaleArray(
+    private val boxes: List<LocaleBox>,
+): LocaleBox {
+
+    override fun send(receiver: CommandSender) {
+        this.boxes.forEach {
+            it.send(receiver)
+        }
+    }
+
 }

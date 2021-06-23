@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val kotlinVersion = "1.5.10"
+val spigotVersion = "1.17-R0.1-SNAPSHOT"
 
 plugins {
     kotlin("jvm") version "1.5.10"
@@ -22,8 +23,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    compileOnly("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
-//    implementation("org.reflections:reflections:0.9.12")
+    compileOnly("org.spigotmc:spigot-api:$spigotVersion")
     implementation("net.oneandone.reflections8:reflections8:0.11.7")
     implementation("org.javassist:javassist:3.28.0-GA")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
