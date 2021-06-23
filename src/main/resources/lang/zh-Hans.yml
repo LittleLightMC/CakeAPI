@@ -1,0 +1,10 @@
+text default command execution fail:
+  - ==: Sound
+    sound: entity.horse.death
+  - ==: Text
+    text: "由于未预料的异常，命令执行失败。"
+info author:
+  - ==: Sound
+    sound: entity.panda.eat
+  - ==: Text
+    text: "本项目由LittleLightMC开发并维护。"

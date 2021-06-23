@@ -168,8 +168,8 @@ class SoundLocaleBox(
             val pitch = args["pitch"]
             return SoundLocaleBox(
                 sound,
-                ((volume ?: 3F) as Double).toFloat(),
-                ((pitch ?: 0.5F) as Double).toFloat(),
+                ((volume ?: 3.0) as Double).toFloat(),
+                ((pitch ?: 0.5) as Double).toFloat(),
             )
         }
     }

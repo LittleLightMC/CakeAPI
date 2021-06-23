@@ -41,6 +41,8 @@ fun Plugin.migrateYAMLFile(path: String): YamlConfiguration {
             }
         }
         if (flag) yaml.save(file)
+    } else {
+        file.writeBytes(getResource(path)!!.readAllBytes())
     }
     return YamlConfiguration.loadConfiguration(file)
 }
@@ -52,7 +54,11 @@ object Config: Plugin by cake {
     lateinit var db: YamlConfiguration
         private set
 
-    @LifeInject([LifeCycle.CakeReload, LifeCycle.CakeLoad])
+    init {
+        init()
+    }
+
+    @LifeInject([LifeCycle.CakeReload])
     @JvmStatic
     fun init() {
         main = migrateYAMLFile("config.yml")
