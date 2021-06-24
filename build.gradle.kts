@@ -8,6 +8,7 @@ plugins {
     kotlin("kapt") version "1.5.10"
     kotlin("plugin.serialization") version "1.5.10"
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    `maven-publish`
 }
 
 group = "pro.darc.cake"
@@ -66,4 +67,23 @@ tasks.processResources {
         "plugin_version" to project.version,
         "plugin_name" to project.name
     )
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/LittleLightMC/CakeAPI")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        register("mavenJava", MavenPublication::class) {
+            artifactId = "cakeapi"
+            from(components["java"])
+        }
+    }
 }
