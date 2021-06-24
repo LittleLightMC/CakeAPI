@@ -43,8 +43,8 @@ object AddonManager : Plugin by CakeAPI.instance {
             val info = AddonInfo(name!!, version!!, uuid, main!!)
             val mainClass = Class.forName(main, true, loader)
             info.instance = mainClass.getConstructor().newInstance() as Addon
-            info.instance!!.init()
             info.instance!!.dataFolder = File(addonFolder, "$uuid")
+            info.instance!!.init()
             addonMap[uuid] = info
             LifecycleLoader.addExternalLifecycle(mainClass.packageName, loader)
             Log.info("Addon $name loaded successfully...")
