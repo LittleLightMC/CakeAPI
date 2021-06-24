@@ -4,10 +4,12 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.util.*
 
 abstract class CakeAddon: Addon {
 
     override lateinit var dataFolder: File
+    override lateinit var uuid: UUID
 
     override fun init() {}
 
