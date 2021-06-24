@@ -40,7 +40,13 @@ class SimpleStringBox(val string: String) : LocaleBox {
 
 }
 
-abstract class ComplexLocaleBox : LocaleBox, ConfigurationSerializable
+abstract class ComplexLocaleBox : LocaleBox, ConfigurationSerializable {
+    override fun toString(): String {
+        return "[LocalBox]"
+    }
+}
+
+interface StringAble
 
 object Box {
     private val boxList: List<KClass<out ComplexLocaleBox>> = listOf(
@@ -63,7 +69,7 @@ object Box {
 @SerializableAs("Text")
 class TextLocaleBox(
     val text: String,
-) : ComplexLocaleBox() {
+) : ComplexLocaleBox(), StringAble {
     override fun send(receiver: CommandSender) {
         receiver.sendMessage(text.colorize())
     }
@@ -79,6 +85,10 @@ class TextLocaleBox(
         fun deserialize(args: Map<String, Any>): TextLocaleBox {
             return TextLocaleBox(REQUIRED(args["text"]) as String)
         }
+    }
+
+    override fun toString(): String {
+        return this.text.colorize()
     }
 
 }
@@ -185,7 +195,7 @@ class TitleLocaleBox(
     private var fadein: Int?,
     private var fadeout: Int?,
     private var stay: Int?,
-) : ComplexLocaleBox() {
+) : ComplexLocaleBox(), StringAble {
 
     init {
         this.subtitle = subtitle ?: ""
@@ -213,6 +223,10 @@ class TitleLocaleBox(
         )
     }
 
+    override fun toString(): String {
+        return this.title.colorize()
+    }
+
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): TitleLocaleBox {
@@ -237,7 +251,7 @@ class BarLocaleBox(
     private var timeout: Int?,
     private var interval: Int?,
     private var flags: ArrayList<String>?,
-) : ComplexLocaleBox() {
+) : ComplexLocaleBox(), StringAble {
 
     val _flags: Array<BarFlag> by lazy {
         flags!!.map {
@@ -285,6 +299,10 @@ class BarLocaleBox(
             "interval" to interval!!,
             "flags" to flags!!,
         )
+    }
+
+    override fun toString(): String {
+        return text.colorize()
     }
 
     companion object {
@@ -394,7 +412,7 @@ class JSONLocaleBox private constructor() : ComplexLocaleBox() {
 @SerializableAs("XML")
 class XMLLocaleBox(
     val text: String,
-): ComplexLocaleBox() {
+): ComplexLocaleBox(), StringAble {
     override fun send(receiver: CommandSender) {
         val replaced = text.replaceByPAPI(if(receiver is Player) receiver else null)
         receiver.msg(MiniMessage.get().parse(replaced))
@@ -404,6 +422,10 @@ class XMLLocaleBox(
         return mutableMapOf(
             "text" to text,
         )
+    }
+
+    override fun toString(): String {
+        return text
     }
 
     companion object {
@@ -418,7 +440,7 @@ class XMLLocaleBox(
 @SerializableAs("Action")
 class ActionLocaleBox(
     val text: String,
-) : ComplexLocaleBox() {
+) : ComplexLocaleBox(), StringAble {
     override fun send(receiver: CommandSender) {
         var message = text.colorize()
         receiver.isPlayerThen {
@@ -434,6 +456,10 @@ class ActionLocaleBox(
         )
     }
 
+    override fun toString(): String {
+        return text.colorize()
+    }
+
     companion object {
         @JvmStatic
         fun deserialize(args: Map<String, Any>): ActionLocaleBox {
@@ -444,12 +470,16 @@ class ActionLocaleBox(
 
 class LocaleArray(
     private val boxes: List<LocaleBox>,
-) : LocaleBox {
+) : LocaleBox, StringAble{
 
     override fun send(receiver: CommandSender) {
         this.boxes.forEach {
             it.send(receiver)
         }
+    }
+
+    override fun toString(): String {
+        return boxes.find { it is StringAble }?.toString() ?: "[LocaleArray@${boxes.size}]"
     }
 
 }

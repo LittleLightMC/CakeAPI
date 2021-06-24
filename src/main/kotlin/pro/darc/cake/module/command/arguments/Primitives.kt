@@ -7,21 +7,19 @@ import pro.darc.cake.module.command.CommandFailException
 import pro.darc.cake.module.command.Executor
 import pro.darc.cake.module.command.TabCompleter
 import pro.darc.cake.module.command.fail
-import pro.darc.cake.module.extensions.FALSE_CASES
-import pro.darc.cake.module.extensions.TRUE_CASES
-import pro.darc.cake.module.extensions.color
-import pro.darc.cake.module.extensions.toBooleanOrNull
+import pro.darc.cake.module.extensions.*
+import pro.darc.cake.module.locale.LocaleManager
 
 // STRING
 
-val MISSING_STRING_PARAMETER = "Missing a word argument.".color(ChatColor.RED)
+val MISSING_STRING_PARAMETER = textOf(LocaleManager.asStringDefault("error missing word arg"))
 
 fun Executor<*>.string(
     index: Int,
     argMissing: BaseComponent = MISSING_STRING_PARAMETER
 ): String = args.getOrNull(index) ?: throw CommandFailException(argMissing, true)
 
-val TEXT_STRING_PARAMETER = "Missing a text argument.".color(ChatColor.RED)
+val TEXT_STRING_PARAMETER = textOf(LocaleManager.asStringDefault("error missing text arg"))
 
 fun Executor<*>.text(
     startIndex: Int,
@@ -35,8 +33,8 @@ fun Executor<*>.text(
 
 // BOOLEAN
 
-val MISSING_BOOLEAN_PARAMETER = "Missing a true/false argument.".color(ChatColor.RED)
-val BOOLEAN_FORMAT = "The parameter needs only true or false.".color(ChatColor.RED)
+val MISSING_BOOLEAN_PARAMETER = textOf(LocaleManager.asStringDefault("error missing boolean arg"))
+val BOOLEAN_FORMAT = textOf(LocaleManager.asStringDefault("error boolean arg"))
 
 /**
  * Returns [Boolean] or null if was not able to parse to Boolean.
@@ -64,8 +62,8 @@ fun TabCompleter.boolean(
     listOf(*trueCases, *falseCases).filter { it.startsWith(arg, true) }
 }
 
-val MISSING_NUMBER_PARAMETER = "Missing a number argument.".color(ChatColor.RED)
-val NUMBER_FORMAT = "The parameter needs only numbers.".color(ChatColor.RED)
+val MISSING_NUMBER_PARAMETER = textOf(LocaleManager.asStringDefault("error missing number arg"))
+val NUMBER_FORMAT = textOf(LocaleManager.asStringDefault("error number arg"))
 
 // INT
 

@@ -18,6 +18,10 @@ class LocaleUnit private constructor() {
         box.send(receiver)
     }
 
+    fun asString(key: String): String? {
+        return itemMap[key]?.toString()
+    }
+
     companion object {
         fun fromMutableMap(map: MutableMap<String, LocaleBox>): LocaleUnit {
             val res = LocaleUnit()

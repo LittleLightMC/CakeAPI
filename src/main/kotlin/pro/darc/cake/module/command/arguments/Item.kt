@@ -11,12 +11,14 @@ import pro.darc.cake.module.command.fail
 import pro.darc.cake.module.extensions.asBlockData
 import pro.darc.cake.module.extensions.asMaterialData
 import pro.darc.cake.module.extensions.color
+import pro.darc.cake.module.extensions.textOf
+import pro.darc.cake.module.locale.LocaleManager
 import java.util.*
 
 // MATERIAL
 
-val MATERIAL_NOT_FOUND = "The item specified not found.".color(ChatColor.RED)
-val MATERIAL_MISSING_PARAMETER = "Missing item argument.".color(ChatColor.RED)
+val MATERIAL_NOT_FOUND = textOf(LocaleManager.asStringDefault("error notfound block arg")!!)
+val MATERIAL_MISSING_PARAMETER = textOf(LocaleManager.asStringDefault("error missing block arg")!!)
 
 private fun toMaterial(string: String) = Material.getMaterial(string.uppercase(Locale.getDefault()))
 
@@ -46,7 +48,7 @@ fun TabCompleter.material(
 
 // MATERIAL DATA
 
-val DATA_FORMAT = "The item data need be in number.".color(ChatColor.RED)
+val DATA_FORMAT = textOf(LocaleManager.asStringDefault("error block data must number")!!)
 
 fun Executor<*>.blockDataOrNull(
     index: Int,

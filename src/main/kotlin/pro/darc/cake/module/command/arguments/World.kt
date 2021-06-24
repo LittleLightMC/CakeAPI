@@ -10,11 +10,13 @@ import pro.darc.cake.module.command.Executor
 import pro.darc.cake.module.command.TabCompleter
 import pro.darc.cake.module.command.fail
 import pro.darc.cake.module.extensions.color
+import pro.darc.cake.module.extensions.textOf
+import pro.darc.cake.module.locale.LocaleManager
 
 // WORLD
 
-val MISSING_WORLD_ARGUMENT = "Missing a world argument.".color(RED)
-val WORLD_NOT_FOUND = "World typed not found.".color(RED)
+val MISSING_WORLD_ARGUMENT = textOf(LocaleManager.asStringDefault("error missing world arg"))
+val WORLD_NOT_FOUND = textOf(LocaleManager.asStringDefault("error notfound world arg"))
 
 /**
  * Returns [World] or null if was not found.
@@ -40,8 +42,8 @@ fun TabCompleter.world(
 
 // COORDINATE
 
-val MISSING_COORDINATE_ARGUMENT = "Missing coordinate argument. Argument format [x] [y] [z]".color(RED)
-val COORDINATE_NUMBER_FORMAT = "Please, type numbers for coordinates".color(RED)
+val MISSING_COORDINATE_ARGUMENT = textOf(LocaleManager.asStringDefault("error coordinate arg"))
+val COORDINATE_NUMBER_FORMAT = textOf(LocaleManager.asStringDefault("error input coordinate arg"))
 
 fun Executor<Player>.coordinate(
     xIndex: Int, yIndex: Int, zIndex: Int,

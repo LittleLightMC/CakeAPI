@@ -30,7 +30,7 @@ fun Plugin.migrateYAMLFile(path: String): YamlConfiguration {
     val packedStream = getResource(path)
         ?: throw FileNotFoundException("Could not found $path in jar resources.")
     val file = subFile(path)
-    val packedYaml = YamlConfiguration.loadConfiguration(InputStreamReader(packedStream))
+    val packedYaml = YamlConfiguration.loadConfiguration(InputStreamReader(packedStream, "UTF-8"))
     if (file.exists()) {
         val yaml = YamlConfiguration.loadConfiguration(file)
         var flag = false

@@ -39,6 +39,10 @@ object LocaleManager {
         defaultLangUnit.sendTo(receiver, key)
     }
 
+    fun asStringDefault(key: String): String {
+        return defaultLangUnit.asString(key) ?: ""
+    }
+
     /**
      * Getting YAML resources in "lang/" dir pf Addon's jar as LocalUnit.
      *

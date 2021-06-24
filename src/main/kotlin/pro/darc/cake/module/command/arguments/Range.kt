@@ -5,10 +5,12 @@ import org.bukkit.ChatColor
 import pro.darc.cake.module.command.Executor
 import pro.darc.cake.module.command.fail
 import pro.darc.cake.module.extensions.color
+import pro.darc.cake.module.extensions.textOf
+import pro.darc.cake.module.locale.LocaleManager
 
 // intRange
-val MISSING_RANGE_PARAMETER = "Missing a range argument.".color(ChatColor.RED)
-val INT_RANGE_FORMAT = "The parameter needs a range of integer.".color(ChatColor.RED)
+val MISSING_RANGE_PARAMETER = textOf(LocaleManager.asStringDefault("error missing range arg"))
+val INT_RANGE_FORMAT = textOf(LocaleManager.asStringDefault("error range must int"))
 
 /**
  * Returns [IntRange] or null if was not able to parse to IntRange given the [separator].

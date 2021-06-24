@@ -8,12 +8,14 @@ import pro.darc.cake.module.command.TabCompleter
 import pro.darc.cake.module.command.fail
 import pro.darc.cake.module.extensions.color
 import pro.darc.cake.module.extensions.onlinePlayers
+import pro.darc.cake.module.extensions.textOf
+import pro.darc.cake.module.locale.LocaleManager
 import java.util.*
 
 // PLAYER
 
-val PLAYER_MISSING_PARAMETER = "Missing player parameter!".color(ChatColor.RED)
-val PLAYER_NOT_ONLINE = "The player specified is not online.".color(ChatColor.RED)
+val PLAYER_MISSING_PARAMETER = textOf(LocaleManager.asStringDefault("error missing player arg")!!)
+val PLAYER_NOT_ONLINE =  textOf(LocaleManager.asStringDefault("error player not online")!!)
 
 /**
  * returns a [Player] or null if the player is not online.
@@ -49,8 +51,8 @@ fun Executor<*>.offlinePlayer(
 
 // GAMEMODE
 
-val GAMEMODE_MISSING_PARAMETER = "Missing GameMode argument.".color(ChatColor.RED)
-val GAMEMODE_NOT_FOUND = "The gamemode specified not found.".color(ChatColor.RED)
+val GAMEMODE_MISSING_PARAMETER = textOf(LocaleManager.asStringDefault("error missing gamemode arg")!!)
+val GAMEMODE_NOT_FOUND = textOf(LocaleManager.asStringDefault("error notfound gamemode arg")!!)
 
 /**
  * returns a [GameMode] or null if was not found.

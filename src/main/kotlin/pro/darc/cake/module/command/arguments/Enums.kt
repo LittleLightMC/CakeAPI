@@ -6,10 +6,12 @@ import pro.darc.cake.module.command.Executor
 import pro.darc.cake.module.command.fail
 import pro.darc.cake.module.extensions.color
 import pro.darc.cake.module.extensions.getIgnoreCase
+import pro.darc.cake.module.extensions.textOf
+import pro.darc.cake.module.locale.LocaleManager
 
 // enum
-val MISSING_ENUM_PARAMETER = "Missing an enum argument.".color(ChatColor.RED)
-val ENUM_VALUE_NOT_FOUND = "The value name specified not found.".color(ChatColor.RED)
+val MISSING_ENUM_PARAMETER = textOf(LocaleManager.asStringDefault("error missing enum arg")!!)
+val ENUM_VALUE_NOT_FOUND = textOf(LocaleManager.asStringDefault("error notfound enum arg")!!)
 
 /**
  * Returns [T] or null if was not able to find in the [Enum].

@@ -22,9 +22,9 @@ fun String.centralize(
     return part + this + part
 }
 
-val TRUE_CASES = arrayOf("true", "正确", "是")
+val TRUE_CASES = arrayOf("true", "正确", "是", "yes")
     get() = field.clone()
-val FALSE_CASES = arrayOf("false", "错误", "否")
+val FALSE_CASES = arrayOf("false", "错误", "否", "no")
     get() = field.clone()
 
 fun String.toBooleanOrNull(
