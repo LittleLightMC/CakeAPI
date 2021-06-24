@@ -8,6 +8,7 @@ interface Addon {
 
     var dataFolder: File
     var uuid: UUID
+    var classLoader: ClassLoader
 
     fun init()
     fun getResource(filename: String): InputStream?

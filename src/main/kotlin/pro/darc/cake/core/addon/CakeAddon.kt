@@ -10,15 +10,13 @@ abstract class CakeAddon: Addon {
 
     override lateinit var dataFolder: File
     override lateinit var uuid: UUID
+    override lateinit var classLoader: ClassLoader
 
     override fun init() {}
 
     override fun getResource(filename: String): InputStream? {
         return try {
-            val url: URL = javaClass.classLoader.getResource(filename) ?: return null
-            val connection = url.openConnection()
-            connection.useCaches = false
-            connection.getInputStream()
+            classLoader.getResourceAsStream(filename)
         } catch (ex: IOException) {
             null
         }

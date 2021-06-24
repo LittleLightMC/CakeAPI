@@ -1,5 +1,6 @@
 package pro.darc.cake.core.addon
 
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
 import pro.darc.cake.CakeAPI
@@ -9,9 +10,7 @@ import pro.darc.cake.core.inject.LifecycleLoader
 import pro.darc.cake.module.extensions.Log
 import pro.darc.cake.module.extensions.cake
 import pro.darc.cake.module.extensions.subFile
-import pro.darc.cake.utils.Once
-import pro.darc.cake.utils.Version
-import pro.darc.cake.utils.toVersion
+import pro.darc.cake.utils.*
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
@@ -32,7 +31,7 @@ object AddonManager : Plugin by CakeAPI.instance {
     private fun loadJar(file: File) {
         assert(file.isFile)
         val url = file.toURI().toURL()
-        val loader = URLClassLoader.newInstance(arrayOf(url), AddonManager::class.java.classLoader)
+        val loader = ChildFirstClassLoader(arrayOf(url), AddonManager::class.java.classLoader)
         val addonManifestStream = loader.getResourceAsStream("addon.yml")
         addonManifestStream?.let { addon ->
             val yamlConfiguration = YamlConfiguration.loadConfiguration(InputStreamReader(addon))
@@ -45,9 +44,10 @@ object AddonManager : Plugin by CakeAPI.instance {
             info.instance = mainClass.getConstructor().newInstance() as Addon
             info.instance!!.dataFolder = File(addonFolder, "$uuid")
             info.instance!!.uuid = uuid
-            info.instance!!.init()
+            info.instance!!.classLoader = loader
             addonMap[uuid] = info
             LifecycleLoader.addExternalLifecycle(mainClass.packageName, loader)
+            info.instance!!.init()
             Log.info("Addon $name loaded successfully...")
         }
     }
@@ -72,7 +72,7 @@ object AddonManager : Plugin by CakeAPI.instance {
 
     fun getAddon(uuid: UUID): AddonInfo? = addonMap[uuid]
 
-    @LifeInject([LifeCycle.CakeLoad, LifeCycle.CakeReload])
+    @LifeInject([LifeCycle.CakeEnable, LifeCycle.CakeReload])
     @JvmStatic
     fun init() {
         addonMap.clear()
