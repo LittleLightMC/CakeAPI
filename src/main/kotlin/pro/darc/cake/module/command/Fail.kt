@@ -2,6 +2,7 @@ package pro.darc.cake.module.command
 
 import net.md_5.bungee.api.chat.BaseComponent
 import pro.darc.cake.module.extensions.asText
+import pro.darc.cake.module.extensions.textOf
 import pro.darc.cake.module.locale.LocaleManager
 import pro.darc.cake.module.locale.sendDefaultLocale
 import pro.darc.cake.utils.collections.ExpirationList
@@ -41,6 +42,7 @@ fun Executor<*>.failLocale(
 ) {
     // TODO use locale
     LocaleManager.sendToDefault(sender, key)
+    throw CommandFailException(textOf(""))
 }
 
 inline fun<T> ExpirationList<T>.failIfContains(
