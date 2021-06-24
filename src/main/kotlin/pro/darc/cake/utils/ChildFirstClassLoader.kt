@@ -9,7 +9,7 @@ import java.util.*
 // From https://medium.com/@isuru89/java-a-child-first-class-loader-cbd9c3d0305
 class ChildFirstClassLoader(urls: Array<URL?>?, parent: ClassLoader?) :
     URLClassLoader(urls, parent) {
-    private val sysClzLoader: ClassLoader?
+    private val sysClzLoader: ClassLoader? = getSystemClassLoader()
 
     @Throws(ClassNotFoundException::class)
     override fun loadClass(name: String, resolve: Boolean): Class<*>? {
@@ -94,7 +94,4 @@ class ChildFirstClassLoader(urls: Array<URL?>?, parent: ClassLoader?) :
         return res
     }
 
-    init {
-        sysClzLoader = getSystemClassLoader()
-    }
 }

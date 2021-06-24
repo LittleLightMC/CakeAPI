@@ -396,7 +396,7 @@ class XMLLocaleBox(
     val text: String,
 ): ComplexLocaleBox() {
     override fun send(receiver: CommandSender) {
-        val replaced = text.colorize().replaceByPAPI(if(receiver is Player) receiver else null)
+        val replaced = text.replaceByPAPI(if(receiver is Player) receiver else null)
         receiver.msg(MiniMessage.get().parse(replaced))
     }
 
