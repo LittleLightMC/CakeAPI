@@ -20,6 +20,8 @@ jobs:
           distribution: 'adopt'
       - name: Build with Gradle
         run: ./gradlew shadowJar
+      - name: Jar without dependencies
+        run: ./gradlew jar
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
