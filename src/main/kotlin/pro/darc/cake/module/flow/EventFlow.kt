@@ -59,7 +59,7 @@ fun <T : Event> eventFlow(
     val assignListener: Listener? = if (assign != null)
         assignListener.apply {
             fun PlayerEvent.closeChannel() {
-                if (!channel.isClosedForSend && player.name == assign.name)
+                if (!channel.isClosedForSend && player.uniqueId == assign.uniqueId)
                     channel.close()
             }
 

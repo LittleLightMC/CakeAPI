@@ -1,23 +1,15 @@
 package pro.darc.cake.module.command
 
-import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.BaseComponent
 import pro.darc.cake.module.extensions.asText
-import pro.darc.cake.module.extensions.color
-import pro.darc.cake.module.extensions.msg
-import pro.darc.cake.module.extensions.showText
+import pro.darc.cake.module.locale.sendDefaultLocale
 import pro.darc.cake.utils.collections.ExpirationList
 import pro.darc.cake.utils.collections.ExpirationMap
-import java.lang.RuntimeException
 
 typealias ErrorHandler = Executor<*>.(Throwable) -> Unit
 
 val defaultErrorHandler: ErrorHandler = {
-    // TODO use locale api
-    sender.msg(
-        "An internal error occurred whilst executing this command".color(ChatColor.RED)
-            .showText(it.toString().color(ChatColor.RED))
-    )
+    sender.sendDefaultLocale("text default command execution fail")
     it.printStackTrace()
 }
 
