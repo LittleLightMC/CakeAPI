@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "pro.darc.cake"
-version = "0.1.3"
+version = "0.1.5"
 
 repositories {
     mavenCentral()
@@ -67,6 +67,28 @@ tasks.processResources {
         "plugin_version" to project.version,
         "plugin_name" to project.name
     )
+}
+
+tasks.javadoc {
+    options.encoding = "UTF-8"
+}
+
+tasks {
+    val sourcesJar by creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+    val javadocJar by creating(Jar::class) {
+        dependsOn.add(javadoc)
+        archiveClassifier.set("javadoc")
+        from(javadoc)
+    }
+
+    artifacts {
+        archives(sourcesJar)
+        archives(javadocJar)
+        archives(jar)
+    }
 }
 
 publishing {
