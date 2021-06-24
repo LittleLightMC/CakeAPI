@@ -59,7 +59,7 @@ object LocaleManager {
         val addonInfo = AddonManager.getAddon(addonId) ?: return null
         val path = "lang/$language.yml"
         val stream = addonInfo.instance?.getResource(path) ?: return null
-        val reader = InputStreamReader(stream)
+        val reader = InputStreamReader(stream, "UTF-8")
         return YamlConfiguration.loadConfiguration(reader).asLocale().apply {
             cachedUnit[key] = this
         }
