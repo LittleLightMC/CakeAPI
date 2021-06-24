@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "pro.darc.cake"
-version = "0.1.13"
+version = "0.1.14"
 
 repositories {
     mavenCentral()
