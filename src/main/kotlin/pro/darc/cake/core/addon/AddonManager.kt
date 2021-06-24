@@ -24,8 +24,8 @@ object AddonManager : Plugin by CakeAPI.instance {
 
     private val addonMap = ConcurrentHashMap<UUID, AddonInfo>()
 
+    private val addonFolder = cake.subFile("addons")
     private val initAddonFolder = Once {
-        val addonFolder = cake.subFile("addons")
         addonFolder.mkdirs()
     }
 
@@ -44,6 +44,7 @@ object AddonManager : Plugin by CakeAPI.instance {
             val mainClass = Class.forName(main, true, loader)
             info.instance = mainClass.getConstructor().newInstance() as Addon
             info.instance!!.init()
+            info.instance!!.dataFolder = File(addonFolder, "$uuid")
             addonMap[uuid] = info
             LifecycleLoader.addExternalLifecycle(mainClass.packageName, loader)
             Log.info("Addon $name loaded successfully...")
