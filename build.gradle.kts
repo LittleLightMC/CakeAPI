@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "pro.darc.cake"
-version = "0.1.5"
+version = "0.1.6"
 
 repositories {
     mavenCentral()
@@ -106,6 +106,9 @@ publishing {
         register("mavenJava", MavenPublication::class) {
             artifactId = "cakeapi"
             from(components["java"])
+            artifacts.remove(tasks.shadowJar)
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
         }
     }
 }
