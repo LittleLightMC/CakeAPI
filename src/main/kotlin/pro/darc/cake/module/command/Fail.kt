@@ -35,7 +35,7 @@ fun Executor<*>.fail(
     execute: suspend () -> Unit = {}
 ): Nothing = fail(senderMessage.takeIf { it.isNotEmpty() }?.asText(), execute = execute)
 
-fun Executor<*>.fail(
+fun Executor<*>.failLocale(
     key: String,
     locale: String? = null,
 ) {
