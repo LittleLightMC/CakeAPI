@@ -84,7 +84,6 @@ publishing {
         register("mavenJava", MavenPublication::class) {
             artifactId = "cakeapi"
             from(components["java"])
-            artifact(tasks["jar"])
         }
     }
 }
