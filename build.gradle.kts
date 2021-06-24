@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "pro.darc.cake"
-version = "0.1.2"
+version = "0.1.3"
 
 repositories {
     mavenCentral()
@@ -75,8 +75,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/LittleLightMC/CakeAPI")
             credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+                username = project.findProperty("llmc.usr") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("llmc.key") as String? ?: System.getenv("TOKEN")
             }
         }
     }
@@ -84,6 +84,7 @@ publishing {
         register("mavenJava", MavenPublication::class) {
             artifactId = "cakeapi"
             from(components["java"])
+            artifact(tasks["jar"])
         }
     }
 }

@@ -18,10 +18,15 @@ jobs:
         with:
           java-version: '16'
           distribution: 'adopt'
-      - name: Build with Gradle
-        run: ./gradlew shadowJar
       - name: Jar without dependencies
         run: ./gradlew jar
+      - name: Push to Package
+        run: ./gradlew publish
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: github-action
+      - name: Build with Gradle
+        run: ./gradlew shadowJar
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -29,8 +34,3 @@ jobs:
             build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Push to Package
-        run: ./gradlew publish
-        env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USERNAME: github-action
