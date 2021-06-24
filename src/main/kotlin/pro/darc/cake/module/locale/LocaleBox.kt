@@ -1,10 +1,10 @@
 package pro.darc.cake.module.locale
 
-import com.comphenix.protocol.PacketType
-import com.comphenix.protocol.events.PacketContainer
-import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.okkero.skedule.schedule
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.BaseComponent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarFlag
@@ -18,35 +18,36 @@ import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifeInject
 import pro.darc.cake.module.extensions.*
 import java.util.*
-import kotlin.collections.ArrayList
+import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 interface LocaleBox {
     fun send(receiver: CommandSender)
 }
 
-class MissingFieldError(override val message: String? = "", override val cause: Throwable? = null): RuntimeException(message, cause)
+class MissingFieldError(override val message: String? = "", override val cause: Throwable? = null) :
+    RuntimeException(message, cause)
 
 @Throws(MissingFieldError::class)
-fun<T> REQUIRED(item: T?): T {
+fun <T> REQUIRED(item: T?): T {
     return (item ?: throw MissingFieldError())
 }
 
-class SimpleStringBox(val string: String): LocaleBox {
+class SimpleStringBox(val string: String) : LocaleBox {
     override fun send(receiver: CommandSender) {
         receiver.sendMessage(string.colorize())
     }
 
 }
 
-abstract class ComplexLocaleBox: LocaleBox, ConfigurationSerializable
+abstract class ComplexLocaleBox : LocaleBox, ConfigurationSerializable
 
 object Box {
     private val boxList: List<KClass<out ComplexLocaleBox>> = listOf(
         TextLocaleBox::class, PlayerCommandLocaleBox::class,
         ServerCommandLocaleBox::class, SoundLocaleBox::class,
-        TitleLocaleBox::class, BarLocaleBox::class, JSONLocaleBox::class,
-        ActionLocaleBox::class,
+        TitleLocaleBox::class, BarLocaleBox::class,
+        ActionLocaleBox::class, XMLLocaleBox::class,
     )
 
     @LifeInject([LifeCycle.CakeLoad])
@@ -62,10 +63,11 @@ object Box {
 @SerializableAs("Text")
 class TextLocaleBox(
     val text: String,
-): ComplexLocaleBox() {
+) : ComplexLocaleBox() {
     override fun send(receiver: CommandSender) {
         receiver.sendMessage(text.colorize())
     }
+
     override fun serialize(): MutableMap<String, Any> {
         return mutableMapOf(
             "text" to text,
@@ -84,7 +86,7 @@ class TextLocaleBox(
 @SerializableAs("PlayerCommand")
 class PlayerCommandLocaleBox(
     val command: String,
-): ComplexLocaleBox() {
+) : ComplexLocaleBox() {
     override fun send(receiver: CommandSender) {
         receiver.isPlayerThen {
             this.performCommand(command.replaceByPAPI(this))
@@ -109,7 +111,7 @@ class PlayerCommandLocaleBox(
 @SerializableAs("ServerCommand")
 class ServerCommandLocaleBox(
     val command: String,
-): ComplexLocaleBox() {
+) : ComplexLocaleBox() {
     override fun send(receiver: CommandSender) {
         val parsed = command.colorize().let {
             if (receiver.isPlayer()) it.replaceByPAPI(receiver as Player)
@@ -138,7 +140,7 @@ class SoundLocaleBox(
     private var sound: String,
     val volume: Float = 3F,
     val pitch: Float = 0.5F,
-): ComplexLocaleBox() {
+) : ComplexLocaleBox() {
 
     init {
         this.sound = sound.lowercase() // resource key must follow regex [a-z0-9/._-]
@@ -183,7 +185,7 @@ class TitleLocaleBox(
     private var fadein: Int?,
     private var fadeout: Int?,
     private var stay: Int?,
-): ComplexLocaleBox() {
+) : ComplexLocaleBox() {
 
     init {
         this.subtitle = subtitle ?: ""
@@ -235,7 +237,7 @@ class BarLocaleBox(
     private var timeout: Int?,
     private var interval: Int?,
     private var flags: ArrayList<String>?,
-): ComplexLocaleBox() {
+) : ComplexLocaleBox() {
 
     val _flags: Array<BarFlag> by lazy {
         flags!!.map {
@@ -301,12 +303,31 @@ class BarLocaleBox(
     }
 }
 
+@Deprecated("Use XMLLocaleBox instead.")
 @SerializableAs("JSON")
-class JSONLocaleBox(
-    val command: String,
-): ComplexLocaleBox() {
+class JSONLocaleBox private constructor() : ComplexLocaleBox() {
+
+    lateinit var component: List<BaseComponent>
+    lateinit var textRaw: List<TextComponent>
+
     override fun send(receiver: CommandSender) {
-        TODO()
+        receiver.isPlayerThen {
+            this.msg(concat(this))
+        } otherwise {
+            this.msg(concat(null))
+        }
+    }
+
+    private fun concat(player: Player?): List<BaseComponent> {
+        val count = component.size.coerceAtMost(textRaw.size)
+        val res = mutableListOf<BaseComponent>()
+        for (i in 0 until count) {
+            textRaw[i].text = textRaw[i].text.replaceByPAPI(player)
+            res.add(textRaw[i])
+            res.add(component[i])
+        }
+        if (textRaw.size >= count) res.addAll(textRaw.subList(count, textRaw.size))
+        return res
     }
 
     override fun serialize(): MutableMap<String, Any> {
@@ -315,17 +336,89 @@ class JSONLocaleBox(
     }
 
     companion object {
+        val pattern: Pattern = Pattern.compile("<(?<text>[^<>]+)?@(?<node>[^<>]+)>")
+
         @JvmStatic
         fun deserialize(args: Map<String, Any>): JSONLocaleBox {
-            TODO()
+            val res = JSONLocaleBox()
+            val text = (REQUIRED(args["text"]) as String).colorize()
+            res.textRaw = text.split(pattern).map { textOf(it) }
+            val resList = mutableListOf<BaseComponent>()
+            (args["args"] is Map<*, *>) then {
+                val nodes = (args["args"]!! as Map<*, *>).mapKeys {
+                    it.key.toString()
+                }
+                val matcher = pattern.matcher(text)
+                while (matcher.find()) {
+                    val t = matcher.group("text").colorize()
+                    val n = matcher.group("node")
+                    if (nodes.containsKey(n)) {
+                        val comp = TextComponent.fromLegacyText(t)
+                        nodes.containsKeyIgnoreCase("suggest") then {
+                            Arrays.stream(comp).forEach { bc ->
+                                bc.suggestCommand(nodes.getIgnoreCase("suggest").toString().colorize())
+                            }
+                        }
+                        nodes.containsKeyIgnoreCase("command") then {
+                            Arrays.stream(comp).forEach { bc ->
+                                bc.runCommand(nodes.getIgnoreCase("command").toString().colorize())
+                            }
+                        }
+                        nodes.containsKeyIgnoreCase("url") then {
+                            Arrays.stream(comp).forEach { bc ->
+                                bc.openUrl(nodes.getIgnoreCase("url").toString().colorize())
+                            }
+                        }
+                        nodes.containsKeyIgnoreCase("hover") then {
+                            Arrays.stream(comp).forEach { bc ->
+                                bc.showText(textOf(nodes.getIgnoreCase("hover").toString().colorize()))
+                            }
+                        }
+                        nodes.containsKeyIgnoreCase("insertion") then {
+                            Arrays.stream(comp).forEach { bc ->
+                                bc.insertion = nodes.getIgnoreCase("insertion").toString().colorize()
+                            }
+                        }
+                        resList.addAll(comp.asList())
+                    } else {
+                        resList.add(textOf(t))
+                    }
+                }
+            }
+            res.component = resList
+            return res
         }
     }
+}
+
+@SerializableAs("XML")
+class XMLLocaleBox(
+    val text: String,
+): ComplexLocaleBox() {
+    override fun send(receiver: CommandSender) {
+        val replaced = text.colorize().replaceByPAPI(if(receiver is Player) receiver else null)
+        receiver.msg(MiniMessage.get().parse(replaced))
+    }
+
+    override fun serialize(): MutableMap<String, Any> {
+        return mutableMapOf(
+            "text" to text,
+        )
+    }
+
+    companion object {
+        @JvmStatic
+        fun deserialize(args: Map<String, Any>): XMLLocaleBox {
+            return XMLLocaleBox(REQUIRED(args["text"]) as String)
+        }
+    }
+
 }
 
 @SerializableAs("Action")
 class ActionLocaleBox(
     val text: String,
-): ComplexLocaleBox() {
+) : ComplexLocaleBox() {
     override fun send(receiver: CommandSender) {
         var message = text.colorize()
         receiver.isPlayerThen {
@@ -351,7 +444,7 @@ class ActionLocaleBox(
 
 class LocaleArray(
     private val boxes: List<LocaleBox>,
-): LocaleBox {
+) : LocaleBox {
 
     override fun send(receiver: CommandSender) {
         this.boxes.forEach {

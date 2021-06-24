@@ -19,6 +19,10 @@ repositories {
     google()
     maven("https://jitpack.io")
     maven("https://repo.dmulloy2.net/repository/public/")
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") {
+        name = "sonatype-oss-snapshots"
+    }
+    maven("https://repo.viaversion.com")
 }
 
 dependencies {
@@ -39,6 +43,8 @@ dependencies {
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
     implementation("com.github.okkero:Skedule:v1.2.6")
     compileOnly("com.github.PlaceholderAPI:PlaceholderAPI:2.10.9")
+    implementation("com.github.LittleLightMC:adventure-text-minimessage:708ef78731")
+    implementation("com.github.LittleLightMC:adventure-platform:d218d21ef3")
 }
 
 tasks.test {
