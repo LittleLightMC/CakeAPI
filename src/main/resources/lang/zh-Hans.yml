@@ -31,3 +31,9 @@ error notfound world arg: "&c对应名称的世界未找到！"
 error coordinate arg: "&c坐标参数格式错误！格式：&7[x] [y] [z]&c。"
 error input coordinate arg: "&c请输入坐标值！"
 
+text reload success:
+  - ==: Sound
+    sound: "entity.firework_rocket.launch"
+  - ==: Text
+    text: "&a&l重新载入成功！"
+

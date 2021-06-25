@@ -51,12 +51,12 @@ object LocaleManager {
      * @param addonId addon's uuid
      * @param language language key
      */
-    fun getAddonLocale(addonId: UUID, language: String): LocaleUnit? {
-        val key = "$addonId-$language"
+    fun getAddonLocale(addonName: String, language: String): LocaleUnit? {
+        val key = "$addonName-$language"
         val cached = cachedUnit[key]
         if (cached != null) return cached
 
-        val addonInfo = AddonManager.getAddon(addonId) ?: return null
+        val addonInfo = AddonManager.getAddon(addonName) ?: return null
         val path = "lang/$language.yml"
         val stream = addonInfo.instance?.getResource(path) ?: return null
         val reader = InputStreamReader(stream, "UTF-8")
@@ -71,6 +71,6 @@ fun CommandSender.sendDefaultLocale(key: String) {
     LocaleManager.sendToDefault(this, key)
 }
 
-fun Addon.getLocale(language: String): LocaleUnit? = LocaleManager.getAddonLocale(uuid, language)
-fun Addon.getDefaultLocale(): LocaleUnit? = LocaleManager.getAddonLocale(uuid, Config.main.getString("default language")!!)
+fun Addon.getLocale(language: String): LocaleUnit? = LocaleManager.getAddonLocale(name, language)
+fun Addon.getDefaultLocale(): LocaleUnit? = LocaleManager.getAddonLocale(name, Config.main.getString("default language")!!)
 

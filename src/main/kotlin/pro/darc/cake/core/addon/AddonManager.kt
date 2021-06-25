@@ -1,5 +1,6 @@
 package pro.darc.cake.core.addon
 
+import org.bstats.charts.CustomChart
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 object AddonManager : Plugin by CakeAPI.instance {
 
-    private val addonMap = ConcurrentHashMap<UUID, AddonInfo>()
+    private val addonMap = ConcurrentHashMap<String, AddonInfo>()
 
     private val addonFolder = cake.subFile("addons")
     private val initAddonFolder = Once {
@@ -42,10 +43,10 @@ object AddonManager : Plugin by CakeAPI.instance {
             val info = AddonInfo(name!!, version!!, uuid, main!!)
             val mainClass = Class.forName(main, true, loader)
             info.instance = mainClass.getConstructor().newInstance() as Addon
-            info.instance!!.dataFolder = File(addonFolder, "$uuid")
-            info.instance!!.uuid = uuid
+            info.instance!!.dataFolder = File(addonFolder, "$name")
             info.instance!!.classLoader = loader
-            addonMap[uuid] = info
+            info.instance!!.name = name
+            addonMap[name] = info
             LifecycleLoader.addExternalLifecycle(mainClass.packageName, loader)
             info.instance!!.init()
             Log.info("Addon $name loaded successfully...")
@@ -64,13 +65,13 @@ object AddonManager : Plugin by CakeAPI.instance {
                     loadJar(file)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.warning("Error occur while loading ${file.name} ...")
+                    Log.warning("Error occurred while loading ${file.name} ...")
                 }
             }
         }
     }
 
-    fun getAddon(uuid: UUID): AddonInfo? = addonMap[uuid]
+    fun getAddon(name: String): AddonInfo? = addonMap[name]
 
     @LifeInject([LifeCycle.CakeEnable, LifeCycle.CakeReload])
     @JvmStatic

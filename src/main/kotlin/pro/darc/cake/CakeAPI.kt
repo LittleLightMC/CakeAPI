@@ -1,13 +1,11 @@
 package pro.darc.cake
 
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.TestOnly
 import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifecycleLoader
 import pro.darc.cake.module.command.command
-import pro.darc.cake.module.extensions.subFile
-import pro.darc.cake.module.locale.asLocale
+import pro.darc.cake.module.locale.sendDefaultLocale
 
 
 open class CakeAPI : JavaPlugin() {
@@ -25,10 +23,12 @@ open class CakeAPI : JavaPlugin() {
     override fun onLoad() {
         instance = this
         LifecycleLoader.runLifecycle(LifeCycle.CakeLoad)
-        command("qwq") {
-            executorPlayer {
-                val locale = YamlConfiguration.loadConfiguration(subFile("test.yml")).asLocale()
-                locale.sendTo(sender, "test")
+        command("cakeapi") {
+            command("reload") {
+                executor {
+                    LifecycleLoader.runLifecycle(LifeCycle.CakeReload)
+                    sender.sendDefaultLocale("text reload success")
+                }
             }
         }
     }
