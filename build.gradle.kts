@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kotlinVersion = "1.5.10"
+val kotlinVersion = "1.5.20"
 val spigotVersion = "1.17-R0.1-SNAPSHOT"
 
 plugins {
