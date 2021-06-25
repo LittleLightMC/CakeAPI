@@ -45,7 +45,7 @@ dependencies {
     implementation("com.github.okkero:Skedule:v1.2.6")
     compileOnly("com.github.PlaceholderAPI:PlaceholderAPI:2.10.9")
     implementation("com.github.LittleLightMC:adventure-text-minimessage:708ef78731")
-    implementation("com.github.LittleLightMC:adventure-platform:d218d21ef3")
+    implementation("com.github.LittleLightMC:adventure-platform:3.0.6")
 }
 
 tasks.test {
