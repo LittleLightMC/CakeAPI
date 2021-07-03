@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
+import org.apache.commons.lang.text.StrSubstitutor
 import org.bukkit.Bukkit
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarFlag
@@ -49,6 +50,11 @@ abstract class ComplexLocaleBox : LocaleBox, ConfigurationSerializable {
 interface StringAble
 
 fun StringAble.asString() = this.toString()
+
+fun StringAble.format(map: Map<String, String>): String {
+    val sub = StrSubstitutor(map, "%(", ")")
+    return sub.replace(this)
+}
 
 object Box {
     private val boxList: List<KClass<out ComplexLocaleBox>> = listOf(
