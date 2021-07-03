@@ -217,12 +217,12 @@ open class CommandDSL (
             } else {
                 emptyList<String>()
             }
-        } else if (args.size > 0) {
-            if (subCommands.isNotEmpty()) {
-                return subCommands
-                    .filter { it.name.startsWith(args.get(0), true) }
+        } else if (args.isNotEmpty()) {
+            return if (subCommands.isNotEmpty()) {
+                subCommands
+                    .filter { it.name.startsWith(args[0], true) }
                     .map { it.name }
-            } else return super.tabComplete(sender, alias, args)
+            } else super.tabComplete(sender, alias, args)
         }
         return super.tabComplete(sender, alias, args)
     }

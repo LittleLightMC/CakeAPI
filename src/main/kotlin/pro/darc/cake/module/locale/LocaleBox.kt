@@ -48,6 +48,8 @@ abstract class ComplexLocaleBox : LocaleBox, ConfigurationSerializable {
 
 interface StringAble
 
+fun StringAble.asString() = this.toString()
+
 object Box {
     private val boxList: List<KClass<out ComplexLocaleBox>> = listOf(
         TextLocaleBox::class, PlayerCommandLocaleBox::class,
