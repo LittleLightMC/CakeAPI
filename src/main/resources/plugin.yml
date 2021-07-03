@@ -8,14 +8,14 @@ depend:
   - ProtocolLib
   - Vault
   - PlaceholderAPI
-libraries:
-  - net.oneandone.reflections8:reflections8:0.11.7
-  - org.javassist:javassist:3.28.0-GA
-  - org.jetbrains.kotlin:kotlin-stdlib:1.5.20
-  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0
-  - org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1
-  - org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.1
-  - org.mongodb:mongodb-driver-reactivestreams:4.2.3
-  - org.litote.kmongo:kmongo-coroutine-serialization:4.2.8
-  - com.github.okkero:Skedule:v1.2.6
-  - net.kyori:adventure-api:4.8.1
+#libraries:
+#  - net.oneandone.reflections8:reflections8:0.11.7
+#  - org.javassist:javassist:3.28.0-GA
+#  - org.jetbrains.kotlin:kotlin-stdlib:1.5.20
+#  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0
+#  - org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1
+#  - org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.1
+#  - org.mongodb:mongodb-driver-reactivestreams:4.2.3
+#  - org.litote.kmongo:kmongo-coroutine-serialization:4.2.8
+#  - com.github.okkero:Skedule:v1.2.6
+#  - net.kyori:adventure-api:4.8.1
