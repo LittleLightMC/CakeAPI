@@ -3,3 +3,12 @@ version: 1
 
 'db uri': "mongodb://localhost:27017"
 
+redis:
+  mode: "single" # single or cluster or master_slave
+  nodes:
+    - "redis://127.0.0.1:6379" # only first node will be used in single instance mode and it also will be used as master in master_slave mode
+  command timeout: 1000 # in ms
+  connect timeout: 3000 # in ms
+  retry time: 3
+  retry interval: 1500 # in ms
+  database: 0 # only single mode and master_salve mode

@@ -13,7 +13,7 @@ import java.lang.reflect.Modifier
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-annotation class LifeInject(val type: Array<LifeCycle>, val priority: Priority = Priority.LOW)
+annotation class LifeInject(val type: Array<LifeCycle>, val priority: Priority = Priority.HIGH)
 
 enum class LifeCycle {
     CakeLoad,

@@ -24,6 +24,11 @@ open class CakeAPI : JavaPlugin() {
         instance = this
         LifecycleLoader.runLifecycle(LifeCycle.CakeLoad)
         command("cakeapi") {
+
+            executor {
+                sender.sendDefaultLocale("info author")
+            }
+
             command("reload") {
                 executor {
                     LifecycleLoader.runLifecycle(LifeCycle.CakeReload)
