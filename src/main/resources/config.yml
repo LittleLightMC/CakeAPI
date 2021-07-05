@@ -1,3 +1,4 @@
 version: 1
 
 default language: zh-Hans
+server name: "lobby" # The server name in BungeeCord

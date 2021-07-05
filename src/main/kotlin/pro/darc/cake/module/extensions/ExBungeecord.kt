@@ -20,6 +20,12 @@ value class BungeeCord(private val player: Player) {
         ByteStreams.newDataOutput().apply{writeUTF(server)}.toByteArray()
     ).send()
 
+    fun getServer(callback: (serverName: String) -> Unit) = BungeeCordRequest(player, "GetServer") {
+        val input = ByteStreams.newDataInput(it)
+        val serverName = input.readUTF()
+        callback(serverName)
+    }
+
     fun retrieveIp(callback: (address: String, port: Int) -> Unit) = BungeeCordRequest(player, "IP") {
         val input = ByteStreams.newDataInput(it)
         val ip = input.readUTF()

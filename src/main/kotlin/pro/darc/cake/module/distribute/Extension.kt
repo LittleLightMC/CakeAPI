@@ -1,8 +1,6 @@
 package pro.darc.cake.module.distribute
 
 import org.redisson.api.*
-import org.redisson.api.listener.MessageListener
-import org.redisson.api.listener.PatternMessageListener
 
 interface WithDistributed
 

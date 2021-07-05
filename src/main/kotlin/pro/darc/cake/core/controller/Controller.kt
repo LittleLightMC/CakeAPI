@@ -3,6 +3,7 @@ package pro.darc.cake.core.controller
 import org.bukkit.event.Listener
 import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifeInject
+import pro.darc.cake.module.extensions.Log
 import pro.darc.cake.module.extensions.cake
 import pro.darc.cake.module.extensions.registerEvents
 
@@ -17,16 +18,23 @@ object Controllers {
     internal val commandController = CommandController()
     internal val providerController = ProviderController()
     internal val menuController = MenuController()
+    internal val distributeController = DistributeController()
 
     private val controllers = listOf(
         commandController, bungeeCordController, providerController, menuController, playerController,
+        distributeController,
     )
 
     @LifeInject([LifeCycle.CakeEnable])
     @JvmStatic
     fun providerHook() {
         controllers.forEach {
-            it.onEnable()
+            try {
+                it.onEnable()
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                Log.warning("An error occurred while initializing controller ${it.javaClass.name} !")
+            }
 
             if (it is Listener) it.registerEvents(cake)
         }
