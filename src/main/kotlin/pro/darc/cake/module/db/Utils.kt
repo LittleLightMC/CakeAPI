@@ -22,8 +22,6 @@ data class AnyValueSurrogate(
 @Serializable
 object NoneType
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = Any::class)
 object AnyValueSerializer : KSerializer<Any?> {
     override val descriptor : SerialDescriptor = AnyValueSurrogate.serializer().descriptor
 
@@ -143,8 +141,6 @@ object AnyValueSerializer : KSerializer<Any?> {
 @Serializable(with = AnySerializableValueSerializer::class)
 data class AnySerializableValue(val value : Any?)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = AnySerializableValue::class)
 object AnySerializableValueSerializer : KSerializer<AnySerializableValue> {
     override val descriptor: SerialDescriptor = AnyValueSurrogate.serializer().descriptor
     override fun serialize(encoder: Encoder, value: AnySerializableValue) =
@@ -158,8 +154,6 @@ typealias SerializableMapType = MutableMap<String, AnySerializableValue>
 abstract class SerializableMap : SerializableMapType
 
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = MapStringAny::class)
 object MapStringAnySerializer : KSerializer<MapStringAny> {
     override val descriptor : SerialDescriptor = SerializableMap.serializer().descriptor
     override fun serialize(encoder: Encoder, value: MapStringAny) {

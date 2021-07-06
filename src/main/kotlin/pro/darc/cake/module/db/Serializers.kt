@@ -1,9 +1,7 @@
 package pro.darc.cake.module.db
 
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
@@ -18,8 +16,6 @@ import org.bukkit.util.BoundingBox
 import org.bukkit.util.Vector
 import java.util.*
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = OfflinePlayer::class)
 object OfflinePlayerSerializer: KSerializer<OfflinePlayer> {
     override fun deserialize(decoder: Decoder): OfflinePlayer {
         val uuid = UUID.fromString(decoder.decodeString())
@@ -33,8 +29,6 @@ object OfflinePlayerSerializer: KSerializer<OfflinePlayer> {
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = World::class)
 object WorldSerializer: KSerializer<World> {
 
     class WorldNotFoundException(uid: UUID?): RuntimeException("World(uid=$uid) not found on this server!")
@@ -51,8 +45,6 @@ object WorldSerializer: KSerializer<World> {
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = Location::class)
 object LocationSerializer: KSerializer<Location> {
     override fun deserialize(decoder: Decoder): Location {
         val x = decoder.decodeDouble()
@@ -71,6 +63,15 @@ object LocationSerializer: KSerializer<Location> {
         encoder.encodeFloat(value.pitch)
         encoder.encodeFloat(value.yaw)
         encoder.encodeSerializableValue(WorldSerializer, value.world!!)
+    }
+
+    override val descriptor: SerialDescriptor get() = buildClassSerialDescriptor("Location") {
+        element<Double>("x")
+        element<Double>("y")
+        element<Double>("z")
+        element<Float>("pitch")
+        element<Float>("yaw")
+        element<World>("world")
     }
 
 }
@@ -98,38 +99,21 @@ open class YAMLConfigurationBasedSerializer<T: ConfigurationSerializable>(
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = AttributeModifier::class)
+
 object AttributeModifierSerializer: YAMLConfigurationBasedSerializer<AttributeModifier>(AttributeModifier::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = BlockVector::class)
 object BlockVectorSerializer: YAMLConfigurationBasedSerializer<BlockVector>(BlockVector::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = BoundingBox::class)
 object BoundingBoxSerializer: YAMLConfigurationBasedSerializer<BoundingBox>(BoundingBox::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = Color::class)
 object ColorSerializer: YAMLConfigurationBasedSerializer<Color>(Color::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = FireworkEffect::class)
 object FireworkEffectSerializer: YAMLConfigurationBasedSerializer<FireworkEffect>(FireworkEffect::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = ItemStack::class)
 object ItemStackSerializer: YAMLConfigurationBasedSerializer<ItemStack>(ItemStack::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = Pattern::class)
 object PatternSerializer: YAMLConfigurationBasedSerializer<Pattern>(Pattern::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = PotionEffect::class)
 object PotionEffectSerializer: YAMLConfigurationBasedSerializer<PotionEffect>(PotionEffect::class.java)
 
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = Vector::class)
 object VectorSerializer: YAMLConfigurationBasedSerializer<Vector>(Vector::class.java)
