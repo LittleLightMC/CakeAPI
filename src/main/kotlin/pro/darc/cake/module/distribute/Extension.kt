@@ -35,6 +35,7 @@ fun WithDistributed.unsubscribeTopic(
     key: String,
     id: Array<Int>,
 ) = getTopic(key).removeListener(*id)
+fun WithDistributed.publishTopic(key: String, msg: Any) = getTopic(key).publish(msg)
 
 fun WithDistributed.getPatternTopic(pattern: String): RPatternTopic = redisson.getPatternTopic(pattern)
 inline fun<reified T> WithDistributed.subscribePatternTopic(
