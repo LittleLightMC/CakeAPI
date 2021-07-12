@@ -32,7 +32,7 @@ dependencies {
     implementation("net.oneandone.reflections8:reflections8:0.11.7")
     implementation("org.javassist:javassist:3.28.0-GA")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
     testImplementation("org.powermock:powermock-module-junit4:2.0.9")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
