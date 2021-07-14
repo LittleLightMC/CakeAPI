@@ -36,7 +36,7 @@ dependencies {
     testImplementation("org.powermock:powermock-module-junit4:2.0.9")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.2")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     implementation("org.mongodb:mongodb-driver-reactivestreams:4.2.3")
