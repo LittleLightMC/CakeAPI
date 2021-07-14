@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val kotlinVersion = "1.5.20"
-val spigotVersion = "1.17-R0.1-SNAPSHOT"
+val spigotVersion = "1.17.1-R0.1-SNAPSHOT"
 
 plugins {
     kotlin("jvm") version "1.5.20"
     kotlin("kapt") version "1.5.21"
-    kotlin("plugin.serialization") version "1.5.20"
+    kotlin("plugin.serialization") version "1.5.21"
     id("com.github.johnrengelman.shadow") version "7.0.0"
     `maven-publish`
 }
@@ -36,7 +36,7 @@ dependencies {
     testImplementation("org.powermock:powermock-module-junit4:2.0.9")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.2")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     implementation("org.mongodb:mongodb-driver-reactivestreams:4.2.3")
