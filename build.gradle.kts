@@ -6,7 +6,7 @@ val spigotVersion = "1.17-R0.1-SNAPSHOT"
 plugins {
     kotlin("jvm") version "1.5.20"
     kotlin("kapt") version "1.5.20"
-    kotlin("plugin.serialization") version "1.5.20"
+    kotlin("plugin.serialization") version "1.5.21"
     id("com.github.johnrengelman.shadow") version "7.0.0"
     `maven-publish`
 }
@@ -38,7 +38,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.1")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     implementation("org.mongodb:mongodb-driver-reactivestreams:4.2.3")
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.8")
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
