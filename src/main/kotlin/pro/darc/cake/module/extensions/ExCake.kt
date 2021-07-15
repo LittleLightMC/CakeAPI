@@ -61,6 +61,7 @@ object Config: Plugin by cake {
     @LifeInject([LifeCycle.CakeReload])
     @JvmStatic
     fun init() {
+        dataFolder.mkdirs()
         main = migrateYAMLFile("config.yml")
         db = migrateYAMLFile("db.yml")
     }
