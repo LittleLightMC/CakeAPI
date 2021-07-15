@@ -117,3 +117,17 @@ object PatternSerializer: YAMLConfigurationBasedSerializer<Pattern>(Pattern::cla
 object PotionEffectSerializer: YAMLConfigurationBasedSerializer<PotionEffect>(PotionEffect::class.java)
 
 object VectorSerializer: YAMLConfigurationBasedSerializer<Vector>(Vector::class.java)
+
+@ExperimentalSerializationApi
+@Serializer(forClass = DateSerializer::class)
+object DateSerializer : KSerializer<Date> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("DateSerializer", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Date) {
+        encoder.encodeString(value.time.toString())
+    }
+
+    override fun deserialize(decoder: Decoder): Date {
+        return Date(decoder.decodeString().toLong())
+    }
+}
