@@ -22,6 +22,7 @@ open class CakeAPI : JavaPlugin() {
 
     override fun onLoad() {
         instance = this
+        dataFolder.mkdirs()
         LifecycleLoader.runLifecycle(LifeCycle.CakeLoad)
         command("cakeapi") {
 
