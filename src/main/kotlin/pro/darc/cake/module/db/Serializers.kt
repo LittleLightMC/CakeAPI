@@ -121,13 +121,13 @@ object VectorSerializer: YAMLConfigurationBasedSerializer<Vector>(Vector::class.
 @ExperimentalSerializationApi
 @Serializer(forClass = DateSerializer::class)
 object DateSerializer : KSerializer<Date> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("DateSerializer", PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("DateSerializer", PrimitiveKind.LONG)
 
     override fun serialize(encoder: Encoder, value: Date) {
-        encoder.encodeString(value.time.toString())
+        encoder.encodeLong(value.time)
     }
 
     override fun deserialize(decoder: Decoder): Date {
-        return Date(decoder.decodeString().toLong())
+        return Date(decoder.decodeLong())
     }
 }
