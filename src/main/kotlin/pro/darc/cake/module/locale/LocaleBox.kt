@@ -433,7 +433,7 @@ class XMLLocaleBox(
     }
 
     override fun toString(): String {
-        return text
+        return text.replaceByPAPI(null)
     }
 
     companion object {

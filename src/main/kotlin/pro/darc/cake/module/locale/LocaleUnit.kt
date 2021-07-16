@@ -3,6 +3,7 @@ package pro.darc.cake.module.locale
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import pro.darc.cake.module.extensions.colorize
+import pro.darc.cake.module.extensions.replaceByNamedArgument
 import pro.darc.cake.module.extensions.then
 import java.util.concurrent.ConcurrentHashMap
 
@@ -21,6 +22,8 @@ class LocaleUnit private constructor() {
     fun asString(key: String): String? {
         return itemMap[key]?.toString()
     }
+
+    fun asStringReplaced(key: String, args: Map<String, String>): String? = itemMap[key]?.toString()?.replaceByNamedArgument(args)
 
     companion object {
         fun fromMutableMap(map: MutableMap<String, LocaleBox>): LocaleUnit {
