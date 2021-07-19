@@ -2,6 +2,7 @@ package pro.darc.cake.module.distribute
 
 import org.redisson.Redisson
 import org.redisson.api.RedissonClient
+import org.redisson.codec.SerializationCodec
 import pro.darc.cake.core.inject.LifeCycle
 import pro.darc.cake.core.inject.LifeInject
 import pro.darc.cake.module.extensions.Config
@@ -28,6 +29,7 @@ object Manager {
         val retryTime = Config.db.getInt("redis.retry time")
         val retryInterval = Config.db.getInt("redis.retry interval")
         val database = Config.db.getInt("redis.database")
+        config.codec = SerializationCodec()
         when(Config.db.getString("redis.mode")) {
             "cluster" -> {
                 config.useClusterServers()

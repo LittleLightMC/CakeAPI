@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "pro.darc.cake"
-version = "0.1.27"
+version = "0.1.28"
 
 repositories {
     mavenCentral()
@@ -42,7 +42,7 @@ dependencies {
     implementation("org.mongodb:mongodb-driver-reactivestreams:4.3.0")
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.8")
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
-    implementation("com.github.okkero:Skedule:v1.2.6")
+    implementation("com.github.LittleLightMC:Skedule:1.2.6")
     compileOnly("com.github.PlaceholderAPI:PlaceholderAPI:2.10.9")
     implementation("com.github.LittleLightMC:adventure-text-minimessage:708ef78731")
     implementation("com.github.LittleLightMC:adventure-platform:d218d21ef3")
