@@ -46,7 +46,7 @@ dependencies {
     compileOnly("com.github.PlaceholderAPI:PlaceholderAPI:2.10.9")
     implementation("com.github.LittleLightMC:adventure-text-minimessage:708ef78731")
     implementation("com.github.LittleLightMC:adventure-platform:d218d21ef3")
-    implementation("org.redisson:redisson:3.16.0")
+    implementation("org.redisson:redisson:3.16.4")
 }
 
 tasks.test {
