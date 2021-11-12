@@ -39,7 +39,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.2")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
-    implementation("org.mongodb:mongodb-driver-reactivestreams:4.3.0")
+    implementation("org.mongodb:mongodb-driver-reactivestreams:4.4.0")
     implementation("org.litote.kmongo:kmongo-coroutine-serialization:4.2.8")
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
     implementation("com.github.LittleLightMC:Skedule:1.2.6")
