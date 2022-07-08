@@ -4,7 +4,7 @@ val kotlinVersion = "1.5.21"
 val spigotVersion = "1.17.1-R0.1-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.7.10"
     kotlin("kapt") version "1.5.21"
     kotlin("plugin.serialization") version "1.5.21"
     id("com.github.johnrengelman.shadow") version "7.0.0"
